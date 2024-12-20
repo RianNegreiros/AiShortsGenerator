@@ -1,0 +1,6 @@
+﻿services:
+  aishortsgenerator:
+    image: aishortsgenerator
+    build:
+      context: .
+      dockerfile: Dockerfile
