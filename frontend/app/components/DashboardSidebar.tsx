@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 import {
   Sidebar,
@@ -10,28 +10,24 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail
-} from '@/components/ui/sidebar'
+  SidebarRail,
+} from '@/components/ui/sidebar';
 
-import {
-  ArrowLeft,
-  LayoutDashboard,
-  FileVideo
-} from 'lucide-react'
+import { ArrowLeft, LayoutDashboard, FileVideo } from 'lucide-react';
 
 // Menu items.
 const items = [
   {
     title: 'Dashboard',
     url: '/dashboard',
-    icon: LayoutDashboard
+    icon: LayoutDashboard,
   },
   {
     title: 'Create new',
-    url: '/create-new',
-    icon: FileVideo
+    url: '/dashboard/create-new',
+    icon: FileVideo,
   },
-]
+];
 
 export default function DashboardSidebar() {
   return (
@@ -55,7 +51,7 @@ export default function DashboardSidebar() {
 
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map(item => (
+              {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <Link href={item.url}>
@@ -72,5 +68,5 @@ export default function DashboardSidebar() {
 
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

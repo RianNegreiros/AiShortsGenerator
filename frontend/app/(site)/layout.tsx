@@ -1,12 +1,12 @@
-import Navbar from '../components/NavBar'
+import Navbar from '../components/NavBar';
 
 export default function SiteLayout({
-  children
+  children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <>
       <Navbar />
       <main className='grow'>{children}</main>
     </>
-  )
+  );
 }

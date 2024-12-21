@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { ThemeProvider, useTheme } from 'next-themes'
-import { Toaster } from '@/components/ui/sonner'
+import { ThemeProvider, useTheme } from 'next-themes';
+import { Toaster } from '@/components/ui/sonner';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -14,11 +14,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       {children}
       <ToasterProvider />
     </ThemeProvider>
-  )
+  );
 }
 
 function ToasterProvider() {
-  const { resolvedTheme } = useTheme()
+  const { resolvedTheme } = useTheme();
 
   return (
     <Toaster
@@ -27,5 +27,5 @@ function ToasterProvider() {
       position='top-center'
       theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
     />
-  )
+  );
 }
