@@ -4,6 +4,10 @@
     build:
       context: ./backend
       dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
   frontend:
     image: frontend
     build:

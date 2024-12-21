@@ -1,1 +1,8 @@
-@AiShortsGenerator_HostAddress = http://localhost:5211
+@AiShortsGenerator_HostAddress = http://localhost:8080
+
+POST {{AiShortsGenerator_HostAddress}}/generate-content
+Content-Type: application/json
+
+{
+  "userInput": "Hello"
+}
