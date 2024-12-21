@@ -28,7 +28,7 @@ const items = [
   },
   {
     title: 'Create new',
-    url: '/create-new',
+    url: '/dashboard/create-new',
     icon: FileVideo
   },
 ]
