@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Label } from '@/components/ui/label'
 import { Card, CardTitle } from '@/components/ui/card'
 import Image from 'next/image'
 
@@ -44,16 +43,23 @@ export default function SelectStyle({ onUserSelect }: SelectStyleProps) {
               onUserSelect('imageStyle', item.name)
             }}
             key={index}
-            className={`cursor-pointer transition-all hover:scale-105 ${selectOption == item.name && 'border-4 border-blue-700 opacity-70 dark:border-white'}`}
+            className={`cursor-pointer transition-all ${
+              selectOption === item.name
+                ? 'border-4 border-black dark:border-white'
+                : 'hover:scale-105'
+            }`}
           >
             <div className='relative aspect-square w-full'>
               <div className='absolute inset-0'>
                 <Image
                   alt='Image'
-                  className='h-auto w-full rounded-lg object-cover'
+                  className={`h-auto w-full rounded-lg object-cover ${
+                    selectOption === item.name ? 'opacity-50' : 'opacity-100'
+                  }`}
                   height='1024'
                   src={item.image}
                   width='1024'
+                  priority
                 />
               </div>
               <div className='absolute bottom-0 left-0 right-0 rounded-b-lg bg-black bg-opacity-75 p-2'>
