@@ -6,14 +6,19 @@ export default function Home() {
     <div className='flex min-h-screen flex-col items-center justify-center px-4 text-center'>
       <div className='w-full max-w-3xl'>
         <h1 className='text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl'>
-          Welcome to Our Platform
+          Create Stunning AI-Generated Shorts in Seconds
         </h1>
         <p className='mt-4 text-lg text-muted-foreground sm:text-xl'>
-          Discover amazing features and boost your productivity.
+          Transform your content with AI-powered short videos that engage and
+          captivate your audience. No video editing skills required!
         </p>
         <Button asChild className='mt-8 w-full sm:w-auto'>
-          <Link href='/dashboard'>Get Started</Link>
+          <Link href='/dashboard/create-new'>Start Generating Shorts</Link>
         </Button>
+        <p className='mt-4 text-sm text-muted-foreground'>
+          Join thousands of creators saving time and boosting engagement with
+          our AI technology.
+        </p>
       </div>
     </div>
   )
