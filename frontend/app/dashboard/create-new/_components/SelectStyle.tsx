@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Label } from '@/components/ui/label';
-import { Card, CardTitle } from '@/components/ui/card';
-import Image from 'next/image';
+import { useState } from 'react'
+import { Label } from '@/components/ui/label'
+import { Card, CardTitle } from '@/components/ui/card'
+import Image from 'next/image'
 
 const options = [
   {
@@ -22,17 +22,17 @@ const options = [
     name: 'WaterColor',
     image: '/images/watercolor.png',
   },
-];
+]
 
 type SelectStyleProps = {
-  onUserSelect: (fieldName: string, fieldValue: string) => void;
-};
+  onUserSelect: (fieldName: string, fieldValue: string) => void
+}
 
 export default function SelectStyle({ onUserSelect }: SelectStyleProps) {
-  const [selectOption, setSelectOption] = useState('');
+  const [selectOption, setSelectOption] = useState('')
   return (
     <div className='space-y-2'>
-      <Label htmlFor='style'>Style</Label>
+      <legend className='mb-4 text-lg font-semibold'>Image Style</legend>
       <div
         id='style'
         className='grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6'
@@ -40,8 +40,8 @@ export default function SelectStyle({ onUserSelect }: SelectStyleProps) {
         {options.map((item, index) => (
           <Card
             onClick={() => {
-              setSelectOption(item.name);
-              onUserSelect('imageStyle', item.name);
+              setSelectOption(item.name)
+              onUserSelect('imageStyle', item.name)
             }}
             key={index}
             className={`cursor-pointer transition-all hover:scale-105 ${selectOption == item.name && 'border-4 border-blue-700 opacity-70 dark:border-white'}`}
@@ -66,5 +66,5 @@ export default function SelectStyle({ onUserSelect }: SelectStyleProps) {
         ))}
       </div>
     </div>
-  );
+  )
 }

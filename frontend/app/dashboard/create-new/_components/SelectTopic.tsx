@@ -1,19 +1,19 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Label } from '@/components/ui/label';
+import { useState } from 'react'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 
 type SelectTopicProps = {
-  onUserSelect: (fieldName: string, fieldValue: string) => void;
-};
+  onUserSelect: (fieldName: string, fieldValue: string) => void
+}
 
 const options = [
   'Custom Prompt',
@@ -22,23 +22,25 @@ const options = [
   'Fun Facts',
   'Motivational',
   'Scary Story',
-];
+]
 
 export default function SelectTopic({ onUserSelect }: SelectTopicProps) {
-  const [contentType, setContentType] = useState('');
+  const [contentType, setContentType] = useState('')
   return (
     <div className='space-y-2'>
-      <Label htmlFor='content-type'>Content Type</Label>
+      <Label htmlFor='content-type' className='text-lg font-semibold'>
+        Content Type
+      </Label>
       <Select
         onValueChange={(value) => {
-          setContentType(value);
+          setContentType(value)
           if (value !== 'Custom Prompt') {
-            onUserSelect('topic', value);
+            onUserSelect('topic', value)
           }
         }}
         value={contentType}
       >
-        <SelectTrigger id='content-type'>
+        <SelectTrigger id='content-type' name='topic'>
           <SelectValue placeholder='Select content type' />
         </SelectTrigger>
         <SelectContent>
@@ -56,5 +58,5 @@ export default function SelectTopic({ onUserSelect }: SelectTopicProps) {
         />
       )}
     </div>
-  );
+  )
 }

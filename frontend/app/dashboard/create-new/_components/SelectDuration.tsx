@@ -1,22 +1,24 @@
-import { Label } from '@/components/ui/label';
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/select'
 
 type SelectDurationProps = {
-  onUserSelect: (fieldName: string, fieldValue: string) => void;
-};
+  onUserSelect: (fieldName: string, fieldValue: string) => void
+}
 
 export default function SelectDuration({ onUserSelect }: SelectDurationProps) {
   return (
     <div className='space-y-2'>
-      <Label htmlFor='duration'>Duration</Label>
+      <Label htmlFor='video-duration' className='text-lg font-semibold'>
+        Video Duration
+      </Label>
       <Select onValueChange={(value) => onUserSelect('duration', value)}>
-        <SelectTrigger id='duration'>
+        <SelectTrigger id='video-duration' name='duration'>
           <SelectValue placeholder='Select duration' />
         </SelectTrigger>
         <SelectContent>
@@ -25,5 +27,5 @@ export default function SelectDuration({ onUserSelect }: SelectDurationProps) {
         </SelectContent>
       </Select>
     </div>
-  );
+  )
 }
