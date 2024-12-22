@@ -4,5 +4,5 @@ POST {{AiShortsGenerator_HostAddress}}/generate-content
 Content-Type: application/json
 
 {
-  "userInput": "Hello"
+  "input": "Tell me a story about a brave knight."
 }

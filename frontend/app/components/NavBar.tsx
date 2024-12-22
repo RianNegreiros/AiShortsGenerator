@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { BrainCircuit } from 'lucide-react';
-import ThemeToggle from './ThemeToggle';
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { BrainCircuit } from 'lucide-react'
+import ThemeToggle from './ThemeToggle'
 
 export default function Navbar() {
   return (
@@ -21,5 +21,5 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  );
+  )
 }

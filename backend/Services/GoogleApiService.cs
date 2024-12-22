@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace AiShortsGenerator.Services;
 
 using System;
@@ -5,20 +7,13 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-public class GoogleApiService
+public class GoogleApiService(HttpClient httpClient)
 {
-    private readonly HttpClient _httpClient;
-
-    public GoogleApiService(HttpClient httpClient)
+    public async Task<string> CallGoogleApi(string input, string apiKey)
     {
-        _httpClient = httpClient;
-    }
-
-    public async Task<string> CallGoogleAPI(string userInput, string apiKey)
-    {
-        if (string.IsNullOrWhiteSpace(userInput))
+        if (string.IsNullOrWhiteSpace(input))
         {
-            throw new ArgumentException("User input cannot be null or empty", nameof(userInput));
+            throw new ArgumentException("User input cannot be null or empty", nameof(input));
         }
 
         
@@ -35,7 +30,7 @@ public class GoogleApiService
                     ""role"": ""user"",
                     ""parts"": [
                         {{
-                            ""text"": ""{userInput}""
+                            ""text"": ""{input}""
                         }}
                     ]
                 }}
@@ -45,21 +40,30 @@ public class GoogleApiService
                 ""topK"": 40,
                 ""topP"": 0.95,
                 ""maxOutputTokens"": 8192,
-                ""responseMimeType"": ""text/plain""
+                ""responseMimeType"": ""application/json""
             }}
         }}";
 
         var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync(url, content);
+        var response = await httpClient.PostAsync(url, content);
 
         if (response.IsSuccessStatusCode)
         {
-            return await response.Content.ReadAsStringAsync();
+            var dataJson = JsonSerializer.Deserialize<JsonElement>(response.Content.ReadAsStringAsync().Result);
+            var textContent = dataJson
+                .GetProperty("candidates")[0]
+                .GetProperty("content")
+                .GetProperty("parts")[0]
+                .GetProperty("text")
+                .GetString();
+            
+            if (!string.IsNullOrWhiteSpace(textContent))
+            {
+                return textContent.Replace("\\n", "\n").Replace("\\\"", "\"");
+            }
         }
-        else
-        {
-            string errorContent = await response.Content.ReadAsStringAsync();
-            throw new Exception($"Error calling Google API: {response.StatusCode}, Content: {errorContent}");
-        }
+
+        var errorContent = await response.Content.ReadAsStringAsync();
+        throw new Exception($"Error calling Google API: {response.StatusCode}, Content: {errorContent}");
     }
 }

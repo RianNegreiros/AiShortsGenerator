@@ -1,7 +1,7 @@
-import { Button } from '@/components/ui/button';
-import { ImageCard } from '../components/ImageCard';
-import Link from 'next/link';
-import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button'
+import { ImageCard } from '../components/ImageCard'
+import Link from 'next/link'
+import { Plus } from 'lucide-react'
 
 const images = [
   { src: 'https://placehold.co/300x200/png', alt: 'Image 1', title: 'Image 1' },
@@ -10,7 +10,7 @@ const images = [
   { src: 'https://placehold.co/300x200/png', alt: 'Image 4', title: 'Image 4' },
   { src: 'https://placehold.co/300x200/png', alt: 'Image 5', title: 'Image 5' },
   { src: 'https://placehold.co/300x200/png', alt: 'Image 6', title: 'Image 6' },
-];
+]
 
 export default function DashboardPage() {
   return (
@@ -36,5 +36,5 @@ export default function DashboardPage() {
         </div>
       )}
     </div>
-  );
+  )
 }

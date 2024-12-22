@@ -1,10 +1,10 @@
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import Image from 'next/image';
+import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import Image from 'next/image'
 
 interface ImageCardProps {
-  src: string;
-  alt: string;
-  title: string;
+  src: string
+  alt: string
+  title: string
 }
 
 export function ImageCard({ src, alt, title }: ImageCardProps) {
@@ -23,5 +23,5 @@ export function ImageCard({ src, alt, title }: ImageCardProps) {
         <p className='text-sm font-medium'>{title}</p>
       </CardFooter>
     </Card>
-  );
+  )
 }

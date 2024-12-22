@@ -5,8 +5,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Register HttpClient and the GoogleApiService
 builder.Services.AddHttpClient<GoogleApiService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
+
+app.UseCors(app.Environment.IsDevelopment() ? "AllowAll" : "AllowSpecificOrigins");
 
 // Define an endpoint for the API
 app.MapPost("/generate-content", async (GoogleApiService googleApiService, HttpContext context) =>
@@ -23,14 +41,14 @@ app.MapPost("/generate-content", async (GoogleApiService googleApiService, HttpC
             }
 
             var json = JsonSerializer.Deserialize<JsonElement>(body);
-            if (!json.TryGetProperty("userInput", out var userInputJson) || string.IsNullOrWhiteSpace(userInputJson.GetString()))
+            if (!json.TryGetProperty("input", out var userInputJson) || string.IsNullOrWhiteSpace(userInputJson.GetString()))
             {
                 return Results.BadRequest(new { success = false, message = "Required parameter 'userInput' is missing or invalid" });
             }
-            string apiKey = builder.Configuration["ApiSettings:ApiKey"];
-            string userInput = userInputJson.GetString()!;
-            string result = await googleApiService.CallGoogleAPI(userInput, apiKey);
-            return Results.Ok(new { success = true, data = result });
+            var apiKey = builder.Configuration["ApiSettings:ApiKey"];
+            var userInput = userInputJson.GetString()!;
+            var result = await googleApiService.CallGoogleApi(userInput, apiKey);
+            return Results.Ok(result);
         }
         catch (Exception ex)
         {
