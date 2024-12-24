@@ -21,10 +21,15 @@ interface FormData {
   duration: string
 }
 
+interface VideoContentItem {
+  imagePrompt: string
+  contextText: string
+}
+
 export default function CreateNew() {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState<FormData>({} as FormData)
-  const [videoContent, setVideoContent] = useState()
+  const [videoContent, setVideoContent] = useState<VideoContentItem[]>([])
 
   const onHandleInputChange = (fieldName: string, fieldValue: string) => {
     setFormData((prev) => ({
@@ -40,15 +45,23 @@ export default function CreateNew() {
 
   const getVideoContent = async () => {
     setIsLoading(true)
-    const prompt = `Write a script to generate ${formData.duration} video on topic: ${formData.topic} along with AI image prompt in ${formData.imageStyle} format for each scene and give me result in JSON format with imagePrompt and ContextText as field, No Plain text`
+    const prompt = `Write a script to generate ${formData.duration} video on topic: ${formData.topic} along with AI image prompt in ${formData.imageStyle} format for each scene and give me result in JSON format with ImagePrompt and ContextText as field, No Plain text`
     await axios
       .post(`${process.env.NEXT_PUBLIC_API_URL}/generate-content`, {
         input: prompt,
       })
       .then((resp) => {
         setVideoContent(resp.data)
+        GenerateAudioFile(resp.data)
       })
     setIsLoading(false)
+  }
+
+  const GenerateAudioFile = async (videoContentData: VideoContentItem[]) => {
+    let script = ''
+    videoContentData.forEach((item) => {
+      script = script + item.contextText + ''
+    })
   }
 
   return (
