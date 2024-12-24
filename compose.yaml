@@ -1,17 +1,12 @@
 ﻿services:
-  backend:
+  app:
     image: backend 
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile 
     ports:
       - "8080:8080"
+    volumes:
+      - ./backend/app.db:/app/app.db
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-  frontend:
-    image: frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - 3000:3000
