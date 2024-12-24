@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-public class GoogleApiService(HttpClient httpClient)
+public class GeminiApiService(HttpClient httpClient)
 {
     public async Task<string> CallGoogleApi(string input, string apiKey)
     {
