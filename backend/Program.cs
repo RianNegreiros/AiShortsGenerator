@@ -1,9 +1,16 @@
 using System.Text.Json;
+using AiShortsGenerator.Data;
 using AiShortsGenerator.Models;
 using AiShortsGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlite("Data Source=./app.db");
+});
 
 builder.Services.AddHttpClient<GeminiApiService>();
 builder.Services.AddScoped<TextToSpeechService>();
@@ -52,7 +59,7 @@ app.MapPost("/generate-content", async (GeminiApiService googleApiService, [From
     .Produces<List<VideoContentItem>>(200)
     .Produces(400);
 
-app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, [FromBody] JsonElement body) =>
+app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, AppDbContext dbContext, [FromBody] JsonElement body) =>
     {
         if (!body.TryGetProperty("input", out var inputJson) || string.IsNullOrWhiteSpace(inputJson.GetString()))
         {
@@ -63,9 +70,26 @@ app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, [
         try
         {
             var apiKey = builder.Configuration["GoogleApi:TextToSpeechKey"];
-            var filePath = await textToSpeechService.SynthesizeTextToSpeech(input, apiKey);
+            
+            var mp3Data = await textToSpeechService.SynthesizeTextToSpeech(input, apiKey);
 
-            return Results.Ok(new { FilePath = filePath });
+            var mp3File = new Mp3File
+            {
+                FileName = $"{Guid.NewGuid()}.mp3",
+                FileData = mp3Data,
+                CreatedAt = DateTime.Now,
+            };
+            
+            dbContext.Add(mp3File);
+            await dbContext.SaveChangesAsync();
+            
+            var downloadUrl = $"{builder.Configuration["BaseUrl"]}/download-audio/{mp3File.Id}";
+            return Results.Ok(new { 
+                success = true, 
+                fileId = mp3File.Id, 
+                fileName = mp3File.FileName,
+                downloadUrl,
+            });
         }
         catch (Exception ex)
         {
@@ -75,5 +99,11 @@ app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, [
     .WithName("GenerateAudio")
     .Produces(200)
     .Produces(400);
+
+app.MapGet("/download-audio/{id:int}", async (int id, AppDbContext dbContext) =>
+    {
+        var mp3File = await dbContext.Mp3Files.FindAsync(id);
+        return mp3File == null ? Results.NotFound() : Results.File(mp3File.FileData, "audio/mpeg", mp3File.FileName);
+    });
 
 app.Run();

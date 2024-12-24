@@ -1,7 +1,8 @@
-@AiShortsGenerator_HostAddress = http://localhost:8080
+@AiShortsGenerator_LocalAddress = http://localhost:5211
+@AiShortsGenerator_DockerAddress = http://localhost:8080
 
 ### Test the Gemini API
-POST {{AiShortsGenerator_HostAddress}}/generate-content
+POST {{AiShortsGenerator_LocalAddress}}/generate-content
 Content-Type: application/json
 
 {
@@ -9,9 +10,12 @@ Content-Type: application/json
 }
 
 ### Test the Text-to-Speech API
-POST {{AiShortsGenerator_HostAddress}}/generate-audio
+POST {{AiShortsGenerator_LocalAddress}}/generate-audio
 Content-Type: application/json
 
 {
   "input": "Hello, this is a test."
 }
+
+### Donwload Audio File
+GET {{AiShortsGenerator_LocalAddress}}/download-audio/1

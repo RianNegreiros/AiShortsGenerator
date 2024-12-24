@@ -30,6 +30,7 @@ export default function CreateNew() {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState<FormData>({} as FormData)
   const [videoContent, setVideoContent] = useState<VideoContentItem[]>([])
+  const [audioFileUrl, setAudioFileUrl] = useState<string>()
 
   const onHandleInputChange = (fieldName: string, fieldValue: string) => {
     setFormData((prev) => ({
@@ -59,8 +60,10 @@ export default function CreateNew() {
 
   const GenerateAudioFile = async (videoContentData: VideoContentItem[]) => {
     let script = ''
-    videoContentData.forEach((item) => {
-      script = script + item.contextText + ''
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/generate-audio`, {
+      input: "test from the frontend"
+    }).then(resp => {
+      setAudioFileUrl(resp.data.downloadUrl)
     })
   }
 
