@@ -1,8 +1,17 @@
 @AiShortsGenerator_HostAddress = http://localhost:8080
 
+### Test the Gemini API
 POST {{AiShortsGenerator_HostAddress}}/generate-content
 Content-Type: application/json
 
 {
   "input": "Tell me a story about a brave knight."
+}
+
+### Test the Text-to-Speech API
+POST {{AiShortsGenerator_HostAddress}}/generate-audio
+Content-Type: application/json
+
+{
+  "input": "Hello, this is a test."
 }
