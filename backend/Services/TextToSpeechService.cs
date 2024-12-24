@@ -4,7 +4,7 @@ namespace AiShortsGenerator.Services;
 
 public class TextToSpeechService
 {
-    public async Task<string> SynthesizeTextToSpeech(string inputText, string apiKey)
+    public async Task<byte[]> SynthesizeTextToSpeech(string inputText, string apiKey)
     {
         if (string.IsNullOrWhiteSpace(inputText))
         {
@@ -33,19 +33,6 @@ public class TextToSpeechService
         };
 
         var response = await client.SynthesizeSpeechAsync(input, voiceSelection, audioConfig);
-        
-        var projectDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        var audioDirectory = Path.Combine(projectDirectory, "GeneratedAudio");
-        
-        if (!Directory.Exists(audioDirectory))
-        {
-            Directory.CreateDirectory(audioDirectory);
-        }
-        
-        var fileName = $"{Guid.NewGuid()}.mp3";
-        var outputFilePath = Path.Combine(audioDirectory, fileName);
-        await File.WriteAllBytesAsync(outputFilePath, response.AudioContent.ToArray());
-
-        return outputFilePath;
+        return response.AudioContent.ToArray();
     }
 }
