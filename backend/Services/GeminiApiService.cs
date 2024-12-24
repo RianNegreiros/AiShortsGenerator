@@ -1,69 +1,73 @@
-using System.Text.Json;
-
 namespace AiShortsGenerator.Services;
 
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
+using AiShortsGenerator.Models;
 
 public class GeminiApiService(HttpClient httpClient)
 {
-    public async Task<string> CallGoogleApi(string input, string apiKey)
+public async Task<List<VideoContentItem>> CallGoogleApi(string input, string apiKey)
+{
+    if (string.IsNullOrWhiteSpace(input))
     {
-        if (string.IsNullOrWhiteSpace(input))
-        {
-            throw new ArgumentException("User input cannot be null or empty", nameof(input));
-        }
+        throw new ArgumentException("User input cannot be null or empty", nameof(input));
+    }
 
-        
-        if (string.IsNullOrEmpty(apiKey))
-        {
-            throw new InvalidOperationException("API key is not configured");
-        }
+    if (string.IsNullOrEmpty(apiKey))
+    {
+        throw new InvalidOperationException("API key is not configured");
+    }
 
-        string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key={apiKey}";
+    string url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key={apiKey}";
 
-        string requestBody = $@"{{
-            ""contents"": [
-                {{
-                    ""role"": ""user"",
-                    ""parts"": [
-                        {{
-                            ""text"": ""{input}""
-                        }}
-                    ]
-                }}
-            ],
-            ""generationConfig"": {{
-                ""temperature"": 1,
-                ""topK"": 40,
-                ""topP"": 0.95,
-                ""maxOutputTokens"": 8192,
-                ""responseMimeType"": ""application/json""
+    string requestBody = $@"{{
+        ""contents"": [
+            {{
+                ""role"": ""user"",
+                ""parts"": [
+                    {{
+                        ""text"": ""{input}""
+                    }}
+                ]
             }}
-        }}";
+        ],
+        ""generationConfig"": {{
+            ""temperature"": 1,
+            ""topK"": 40,
+            ""topP"": 0.95,
+            ""maxOutputTokens"": 8192,
+            ""responseMimeType"": ""application/json""
+        }}
+    }}";
 
-        var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-        var response = await httpClient.PostAsync(url, content);
+    var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+    var response = await httpClient.PostAsync(url, content);
 
-        if (response.IsSuccessStatusCode)
+    if (response.IsSuccessStatusCode)
+    {
+        var dataJson = JsonSerializer.Deserialize<JsonElement>(response.Content.ReadAsStringAsync().Result);
+        
+        if (dataJson.TryGetProperty("candidates", out var candidates))
         {
-            var dataJson = JsonSerializer.Deserialize<JsonElement>(response.Content.ReadAsStringAsync().Result);
-            var textContent = dataJson
-                .GetProperty("candidates")[0]
+            var contentText = candidates[0]
                 .GetProperty("content")
                 .GetProperty("parts")[0]
                 .GetProperty("text")
                 .GetString();
             
-            if (!string.IsNullOrWhiteSpace(textContent))
+            var videoContentList = JsonSerializer.Deserialize<List<VideoContentItem>>(contentText);
+            
+            if (videoContentList != null)
             {
-                return textContent.Replace("\\n", "\n").Replace("\\\"", "\"");
+                return videoContentList;
             }
         }
-
-        var errorContent = await response.Content.ReadAsStringAsync();
-        throw new Exception($"Error calling Google API: {response.StatusCode}, Content: {errorContent}");
     }
+
+    var errorContent = await response.Content.ReadAsStringAsync();
+    throw new Exception($"Error calling Google API: {response.StatusCode}, Content: {errorContent}");
+}
 }
