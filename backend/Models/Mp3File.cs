@@ -1,9 +1,9 @@
 namespace AiShortsGenerator.Models;
 
-public class Mp3File
+public class Mp3File(string fileName, byte[] fileData)
 {
-    public int Id { get; set; }
-    public string FileName { get; set; }
-    public byte[] FileData { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public int Id { get; init; }
+    public string FileName { get; init; } = fileName;
+    public byte[] FileData { get; init; } = fileData;
+    public DateTime CreatedAt { get; init; }
 }

@@ -44,8 +44,13 @@ app.MapPost("/generate-content", async (GeminiApiService googleApiService, [From
                 return Results.BadRequest(new { success = false, message = "Required parameter 'input' is missing or invalid." });
             }
 
-            var userInput = userInputJson.GetString()!;
             var apiKey = builder.Configuration["GoogleApi:GeminiKey"];
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                return Results.BadRequest(new { success = false, message = "API key is missing or not configured." });
+            }
+
+            var userInput = userInputJson.GetString()!;
             var result = await googleApiService.CallGoogleApi(userInput, apiKey);
 
             return Results.Ok(result);
@@ -70,23 +75,23 @@ app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, A
         try
         {
             var apiKey = builder.Configuration["GoogleApi:TextToSpeechKey"];
-            
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                return Results.BadRequest(new { success = false, message = "API key is missing or not configured." });
+            }
+
             var mp3Data = await textToSpeechService.SynthesizeTextToSpeech(input, apiKey);
 
-            var mp3File = new Mp3File
-            {
-                FileName = $"{Guid.NewGuid()}.mp3",
-                FileData = mp3Data,
-                CreatedAt = DateTime.Now,
-            };
-            
+            var mp3File = new Mp3File($"{Guid.NewGuid()}.mp3", mp3Data);
+
             dbContext.Add(mp3File);
             await dbContext.SaveChangesAsync();
-            
+
             var downloadUrl = $"{builder.Configuration["BaseUrl"]}/download-audio/{mp3File.Id}";
-            return Results.Ok(new { 
-                success = true, 
-                fileId = mp3File.Id, 
+            return Results.Ok(new
+            {
+                success = true,
+                fileId = mp3File.Id,
                 fileName = mp3File.FileName,
                 downloadUrl,
             });

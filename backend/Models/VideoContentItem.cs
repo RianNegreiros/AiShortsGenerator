@@ -1,7 +1,7 @@
 namespace AiShortsGenerator.Models;
 
-public class VideoContentItem
+public abstract class VideoContentItem(string imagePrompt, string contextText)
 {
-    public string ImagePrompt { get; set; }
-    public string ContextText { get; set; }
+    public string ImagePrompt { get; set; } = imagePrompt;
+    public string ContextText { get; set; } = contextText;
 }
