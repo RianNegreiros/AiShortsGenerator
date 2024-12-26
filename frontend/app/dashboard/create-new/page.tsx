@@ -26,11 +26,23 @@ interface VideoContentItem {
   contextText: string
 }
 
+interface TranscriptSegment {
+  confidence: number;
+  start: number;
+  end: number;
+  text: string;
+  channel: string | null;
+  speaker: string | null;
+}
+
+const fileUrl = "https://res.cloudinary.com/riannegreirosdev/video/upload/v1735171273/audio-files/cou43pyi0mpuxede4sem.mp3"
+
 export default function CreateNew() {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState<FormData>({} as FormData)
   const [videoContent, setVideoContent] = useState<VideoContentItem[]>([])
   const [audioFileUrl, setAudioFileUrl] = useState<string>()
+  const [captions, setCaptions] = useState<TranscriptSegment[]>();
 
   const onHandleInputChange = (fieldName: string, fieldValue: string) => {
     setFormData((prev) => ({
@@ -41,7 +53,8 @@ export default function CreateNew() {
 
   const onCreateSubmitHandler = (e: React.FormEvent) => {
     e.preventDefault()
-    getVideoContent()
+    // getVideoContent()
+    GenerateCaptions(fileUrl)
   }
 
   const getVideoContent = async () => {
@@ -54,16 +67,27 @@ export default function CreateNew() {
       .then((resp) => {
         setVideoContent(resp.data)
         GenerateAudioFile(resp.data)
+        GenerateCaptions(audioFileUrl)
       })
     setIsLoading(false)
   }
 
   const GenerateAudioFile = async (videoContentData: VideoContentItem[]) => {
     let script = ''
-    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/generate-audio`, {
-      input: "test from the frontend"
+    await axios
+      .post(`${process.env.NEXT_PUBLIC_API_URL}/generate-audio`, {
+        input: 'test from the frontend',
+      })
+      .then((resp) => {
+        setAudioFileUrl(resp.data)
+      })
+  }
+
+  const GenerateCaptions = async (fileUrl?: string) => {
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/generate-captions`, {
+      fileUrl
     }).then(resp => {
-      setAudioFileUrl(resp.data.downloadUrl)
+      setCaptions(resp.data)
     })
   }
 

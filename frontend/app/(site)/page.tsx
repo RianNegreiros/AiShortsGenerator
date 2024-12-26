@@ -16,8 +16,7 @@ export default function Home() {
           <Link href='/dashboard/create-new'>Start Generating Shorts</Link>
         </Button>
         <p className='mt-4 text-sm text-muted-foreground'>
-          Join thousands of creators saving time and boosting engagement with
-          our AI technology.
+          Save time and boost engagement with AI technology.
         </p>
       </div>
     </div>
