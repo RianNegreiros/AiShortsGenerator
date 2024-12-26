@@ -6,7 +6,7 @@ POST {{AiShortsGenerator_LocalAddress}}/generate-content
 Content-Type: application/json
 
 {
-  "input": "Tell me a story about a brave knight."
+  "input": "Write a script to generate 30 seconds video on topic: Ai Random Story along with AI image prompt in Realistic format for each scene and give me result in JSON format with ImagePrompt and ContextText as field, No Plain text"
 }
 
 ### Test the Text-to-Speech API
@@ -14,8 +14,14 @@ POST {{AiShortsGenerator_LocalAddress}}/generate-audio
 Content-Type: application/json
 
 {
-  "input": "Hello, this is a test."
+  "input": "The robot had been wandering for what felt like an eternity."
 }
 
-### Donwload Audio File
-GET {{AiShortsGenerator_LocalAddress}}/download-audio/1
+### Test Generate Captions
+POST {{AiShortsGenerator_LocalAddress}}/generate-captions
+Content-Type: application/json
+
+{
+  "fileUrl": "https://res.cloudinary.com/riannegreirosdev/video/upload/v1735171273/audio-files/cou43pyi0mpuxede4sem.mp3"
+}
+

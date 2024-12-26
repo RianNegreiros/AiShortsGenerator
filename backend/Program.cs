@@ -1,19 +1,14 @@
 using System.Text.Json;
-using AiShortsGenerator.Data;
 using AiShortsGenerator.Models;
 using AiShortsGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseSqlite("Data Source=./app.db");
-});
-
 builder.Services.AddHttpClient<GeminiApiService>();
 builder.Services.AddScoped<TextToSpeechService>();
+builder.Services.AddScoped<AssemblyAiService>();
+builder.Services.AddSingleton<Cloudinary>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", policy =>
@@ -64,7 +59,7 @@ app.MapPost("/generate-content", async (GeminiApiService googleApiService, [From
     .Produces<List<VideoContentItem>>(200)
     .Produces(400);
 
-app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, AppDbContext dbContext, [FromBody] JsonElement body) =>
+app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, Cloudinary audioUploadService, [FromBody] JsonElement body) =>
     {
         if (!body.TryGetProperty("input", out var inputJson) || string.IsNullOrWhiteSpace(inputJson.GetString()))
         {
@@ -81,20 +76,8 @@ app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, A
             }
 
             var mp3Data = await textToSpeechService.SynthesizeTextToSpeech(input, apiKey);
-
-            var mp3File = new Mp3File($"{Guid.NewGuid()}.mp3", mp3Data);
-
-            dbContext.Add(mp3File);
-            await dbContext.SaveChangesAsync();
-
-            var downloadUrl = $"{builder.Configuration["BaseUrl"]}/download-audio/{mp3File.Id}";
-            return Results.Ok(new
-            {
-                success = true,
-                fileId = mp3File.Id,
-                fileName = mp3File.FileName,
-                downloadUrl,
-            });
+            var audioUrl = await audioUploadService.UploadAudio(mp3Data);
+            return Results.Ok(audioUrl);
         }
         catch (Exception ex)
         {
@@ -105,10 +88,30 @@ app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, A
     .Produces(200)
     .Produces(400);
 
-app.MapGet("/download-audio/{id:int}", async (int id, AppDbContext dbContext) =>
+app.MapPost("/generate-captions", async (AssemblyAiService assemblyAiService, [FromBody] JsonElement body) =>
     {
-        var mp3File = await dbContext.Mp3Files.FindAsync(id);
-        return mp3File == null ? Results.NotFound() : Results.File(mp3File.FileData, "audio/mpeg", mp3File.FileName);
+        if (!body.TryGetProperty("fileUrl", out var inputJson) || string.IsNullOrWhiteSpace(inputJson.GetString()))
+        {
+            return Results.BadRequest(new { success = false, message = "Required parameter 'fileUrl' is missing or invalid." });
+        }
+
+        var fileUrl = inputJson.GetString()!;
+        try
+        {
+            var apiKey = builder.Configuration["AssemblyAi:ApiKey"];
+            if (string.IsNullOrEmpty(apiKey))
+            {
+                return Results.BadRequest(new { success = false, message = "API key is missing or not configured." });
+            }
+
+            var transcript = await assemblyAiService.Transcribe(fileUrl, apiKey);
+
+            return Results.Ok(transcript);
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest(new { success = false, message = ex.Message });
+        }
     });
 
 app.Run();
