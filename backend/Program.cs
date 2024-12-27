@@ -155,4 +155,19 @@ app.MapPost("/save-video", async ([FromBody] Video video, AppDbContext context) 
     return Results.Ok(new { message = "Video saved successfully", videoId = video.Id });
 });
 
+app.MapGet("/videos/{id:int}", async (int id, AppDbContext context) =>
+{
+    var video = await context.Videos.FirstOrDefaultAsync(v => v.Id == id);
+
+    return video == null ? Results.NotFound() : Results.Ok(video);
+});
+
+app.MapGet("/videos", async (AppDbContext context) =>
+{
+    var videos = await context.Videos.ToListAsync();
+
+    return Results.Ok(videos);
+});
+
+
 app.Run();

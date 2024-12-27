@@ -14,7 +14,8 @@ import SelectStyle from './_components/SelectStyle'
 import SelectDuration from './_components/SelectDuration'
 import axios from 'axios'
 import Loading from './_components/Loading'
-import { useVideoData } from '@/app/_context/VideoDataContext'
+import { VideoPlayerDialog } from '../_components/VideoPlayerDialog'
+import { VideoContentItem, VideoData } from '@/app/lib/interface'
 
 interface FormData {
   topic: string
@@ -22,39 +23,31 @@ interface FormData {
   duration: string
 }
 
-interface VideoContentItem {
-  imagePrompt: string
-  contextText: string
-}
-
-interface TranscriptSegment {
-  confidence: number
-  start: number
-  end: number
-  text: string
-  channel: string | null
-  speaker: string | null
-}
-
-interface VideoData {
-  videoContent: VideoContentItem[]
-  audioFileUrl?: string
-  captions?: TranscriptSegment[]
-  images?: string[]
-}
-
 export default function CreateNew() {
   const [isLoading, setIsLoading] = useState(false)
   const [loadingMessage, setLoadingMessage] = useState(
     'Generating your video...',
   )
-  const [progress, setProgress] = useState(65)
+  const [progress, setProgress] = useState(0)
   const [formData, setFormData] = useState<FormData>({} as FormData)
-  const [videoContent, setVideoContent] = useState<VideoContentItem[]>([])
-  const [audioFileUrl, setAudioFileUrl] = useState<string>()
-  const [captions, setCaptions] = useState<TranscriptSegment[]>()
-  const [images, setImages] = useState<string[]>()
-  const { videoData, setVideoData } = useVideoData()
+  const [playVideo, setPlayVideo] = useState(false)
+  const [videoData, setVideoData] = useState<VideoData>({
+    videoContent: [],
+    audioFileUrl: '',
+    captions: [],
+    images: [],
+  })
+
+  useEffect(() => {
+    if (
+      videoData.videoContent.length > 0 &&
+      videoData.audioFileUrl &&
+      videoData.captions.length > 0 &&
+      videoData.images.length > 0
+    ) {
+      SaveVideoToDatabase(videoData)
+    }
+  }, [videoData])
 
   const onHandleInputChange = (fieldName: string, fieldValue: string) => {
     setFormData((prev) => ({
@@ -81,11 +74,12 @@ export default function CreateNew() {
     )
 
     if (resp.data) {
-      setVideoData((prev: VideoData) => ({
-        ...prev,
-        videoContent: resp.data,
-      }))
-      setVideoContent(resp.data)
+      setVideoData((prev) => {
+        return {
+          ...prev,
+          videoContent: resp.data,
+        }
+      })
       await GenerateAudioFile(resp.data)
     }
   }
@@ -104,11 +98,12 @@ export default function CreateNew() {
       },
     )
     if (resp.data) {
-      setVideoData((prev: VideoData) => ({
-        ...prev,
-        audioFileUrl: resp.data,
-      }))
-      setAudioFileUrl(resp.data)
+      setVideoData((prev) => {
+        return {
+          ...prev,
+          audioFileUrl: resp.data,
+        }
+      })
       await GenerateCaptions(resp.data, videoContentData)
     }
   }
@@ -126,30 +121,33 @@ export default function CreateNew() {
       },
     )
     if (resp.data) {
-      setVideoData((prev: VideoData) => ({
-        ...prev,
-        captions: resp.data,
-      }))
-      setCaptions(resp.data)
+      setVideoData((prev) => {
+        return {
+          ...prev,
+          captions: resp.data,
+        }
+      })
       await GenerateImage(videoContentData)
     }
   }
 
   const SaveVideoToDatabase = async (videoData: VideoData) => {
-    setLoadingMessage('Saving your video to the database...')
-    setProgress(99)
     try {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/save-video`,
-        videoData,
-      )
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/save-video`, {
+        videoContent: videoData.videoContent,
+        captions: videoData.captions,
+        images: videoData.images,
+        audioFileUrl: videoData.audioFileUrl,
+      })
     } catch (error) {
       console.error('Error saving video:', error)
     }
   }
 
   const GenerateImage = async (videoContent: VideoContentItem[]) => {
-    setLoadingMessage('Generating images...')
+    setLoadingMessage(
+      'Generating images... This part can take a minute or two.',
+    )
     setProgress(90)
     let responseImages: string[] = []
     for (const item of videoContent) {
@@ -165,14 +163,15 @@ export default function CreateNew() {
         console.log('Error:' + e)
       }
     }
-    setVideoData((prev: VideoData) => ({
-      ...prev,
-      images: responseImages,
-    }))
-    setImages(responseImages)
-    await SaveVideoToDatabase(videoData)
+    setVideoData((prev) => {
+      return {
+        ...prev,
+        images: responseImages,
+      }
+    })
     setProgress(100)
     setIsLoading(false)
+    setPlayVideo(true)
   }
 
   return (
@@ -201,6 +200,7 @@ export default function CreateNew() {
         progress={progress}
         message={loadingMessage}
       />
+      <VideoPlayerDialog playVideo={playVideo} video={videoData} />
     </div>
   )
 }
