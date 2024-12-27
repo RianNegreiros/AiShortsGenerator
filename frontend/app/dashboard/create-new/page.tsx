@@ -135,9 +135,22 @@ export default function CreateNew() {
     }
   }
 
+  const SaveVideoToDatabase = async (videoData: VideoData) => {
+    setLoadingMessage('Saving your video to the database...')
+    setProgress(99)
+    try {
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/save-video`,
+        videoData,
+      )
+    } catch (error) {
+      console.error('Error saving video:', error)
+    }
+  }
+
   const GenerateImage = async (videoContent: VideoContentItem[]) => {
     setLoadingMessage('Generating images...')
-    setProgress(95)
+    setProgress(90)
     let responseImages: string[] = []
     for (const item of videoContent) {
       try {
@@ -157,13 +170,10 @@ export default function CreateNew() {
       images: responseImages,
     }))
     setImages(responseImages)
+    await SaveVideoToDatabase(videoData)
     setProgress(100)
     setIsLoading(false)
   }
-
-  useEffect(() => {
-    console.log(videoData)
-  }, [videoData])
 
   return (
     <div className='container mx-auto px-4 py-8'>
