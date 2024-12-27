@@ -6,7 +6,5 @@
       dockerfile: Dockerfile 
     ports:
       - "8080:8080"
-    volumes:
-      - ./backend/app.db:/app/app.db
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
