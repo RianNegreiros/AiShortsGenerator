@@ -33,6 +33,9 @@ Content-Type: application/json
   "prompt": "A realistic depiction of the Library of Alexandria around 250 BC, showing scholars working with scrolls, detailed architecture, soft lighting from oil lamps, ancient setting."
 }
 
+### Test Get Video by Id
+GET {{AiShortsGenerator_LocalAddress}}/videos/1
+
 ### Test Save Video
 POST {{AiShortsGenerator_LocalAddress}}/save-video
 Content-Type: application/json
@@ -40,12 +43,10 @@ Content-Type: application/json
 {
   "videoContent": [
     {
-      "id": 0,
       "imagePrompt": "A photorealistic, wide shot of the Great Pyramid of Giza at sunrise, with a few people in ancient Egyptian clothing walking in the foreground. Golden light casting long shadows. Clear blue sky.",
       "contextText": "The Great Pyramid of Giza was the tallest man-made structure for over 3,800 years."
     },
     {
-      "id": 0,
       "imagePrompt": "A realistic, medium shot of a Roman soldier in full armor standing guard in front of the Colosseum. The Colosseum is partially lit by the afternoon sun. A sense of history and power.",
       "contextText": "The Colosseum in Rome could hold between 50,000 and 80,000 spectators."
     }
@@ -83,94 +84,6 @@ Content-Type: application/json
       "text": "of",
       "channel": null,
       "speaker": null
-    },
-    {
-      "confidence": 0.81664,
-      "start": 1056,
-      "end": 1496,
-      "text": "Giza",
-      "channel": null,
-      "speaker": null
-    },
-    {
-      "confidence": 0.99984,
-      "start": 1528,
-      "end": 1672,
-      "text": "was",
-      "channel": null,
-      "speaker": null
-    },
-    {
-      "confidence": 0.99982,
-      "start": 1696,
-      "end": 1832,
-      "text": "the",
-      "channel": null,
-      "speaker": null
-    },
-    {
-      "confidence": 0.99978,
-      "start": 1856,
-      "end": 2184,
-      "text": "tallest",
-      "channel": null,
-      "speaker": null
-    },
-    {
-      "confidence": 0.99985,
-      "start": 2232,
-      "end": 2440,
-      "text": "man",
-      "channel": null,
-      "speaker": null
-    },
-    {
-      "confidence": 0.99442,
-      "start": 2480,
-      "end": 2680,
-      "text": "made",
-      "channel": null,
-      "speaker": null
-    },
-    {
-      "confidence": 0.99959,
-      "start": 2720,
-      "end": 3096,
-      "text": "structure",
-      "channel": null,
-      "speaker": null
-    },
-    {
-      "confidence": 0.99963,
-      "start": 3128,
-      "end": 3272,
-      "text": "for",
-      "channel": null,
-      "speaker": null
-    },
-    {
-      "confidence": 0.99976,
-      "start": 3296,
-      "end": 3528,
-      "text": "over",
-      "channel": null,
-      "speaker": null
-    },
-    {
-      "confidence": 0.94912,
-      "start": 3584,
-      "end": 4616,
-      "text": "3,800",
-      "channel": null,
-      "speaker": null
-    },
-    {
-      "confidence": 0.99909,
-      "start": 4688,
-      "end": 5256,
-      "text": "years.",
-      "channel": null,
-      "speaker": null
     }
   ],
   "images": [
@@ -178,3 +91,7 @@ Content-Type: application/json
     "https://res.cloudinary.com/riannegreirosdev/image/upload/v1735304876/image-files/zjld8lgtreiwzzvjgs9w.jpg"
   ]
 }
+
+### Test Get All videos
+GET {{AiShortsGenerator_LocalAddress}}/videos
+Content-Type: application/json
