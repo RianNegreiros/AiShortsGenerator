@@ -1,8 +1,11 @@
 using System.Text.Json;
+using AiShortsGenerator.Data;
 using AiShortsGenerator.DTOs;
 using AiShortsGenerator.Models;
 using AiShortsGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,12 @@ builder.Services.AddScoped<TextToSpeechService>();
 builder.Services.AddScoped<AssemblyAiService>();
 builder.Services.AddSingleton<CloudinaryService>();
 builder.Services.AddHttpClient<CloudflareApiService>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    var dataSourceBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
+    dataSourceBuilder.EnableDynamicJson();
+    options.UseNpgsql(dataSourceBuilder.Build());
+});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", policy =>
@@ -29,6 +38,12 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
 
 app.UseCors(app.Environment.IsDevelopment() ? "AllowAll" : "AllowSpecificOrigins");
 
@@ -130,6 +145,14 @@ app.MapPost("/generate-image", async (
     {
         return Results.Problem(ex.Message, statusCode: 500);
     }
+});
+
+app.MapPost("/save-video", async ([FromBody] Video video, AppDbContext context) =>
+{
+    await context.Videos.AddAsync(video);
+    await context.SaveChangesAsync();
+
+    return Results.Ok(new { message = "Video saved successfully", videoId = video.Id });
 });
 
 app.Run();
