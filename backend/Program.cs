@@ -1,4 +1,5 @@
 using System.Text.Json;
+using AiShortsGenerator.DTOs;
 using AiShortsGenerator.Models;
 using AiShortsGenerator.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient<GeminiApiService>();
 builder.Services.AddScoped<TextToSpeechService>();
 builder.Services.AddScoped<AssemblyAiService>();
-builder.Services.AddSingleton<Cloudinary>();
+builder.Services.AddSingleton<CloudinaryService>();
+builder.Services.AddHttpClient<CloudflareApiService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", policy =>
@@ -59,7 +61,7 @@ app.MapPost("/generate-content", async (GeminiApiService googleApiService, [From
     .Produces<List<VideoContentItem>>(200)
     .Produces(400);
 
-app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, Cloudinary audioUploadService, [FromBody] JsonElement body) =>
+app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, CloudinaryService cloudinary, [FromBody] JsonElement body) =>
     {
         if (!body.TryGetProperty("input", out var inputJson) || string.IsNullOrWhiteSpace(inputJson.GetString()))
         {
@@ -69,14 +71,8 @@ app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, C
         var input = inputJson.GetString()!;
         try
         {
-            var apiKey = builder.Configuration["GoogleApi:TextToSpeechKey"];
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                return Results.BadRequest(new { success = false, message = "API key is missing or not configured." });
-            }
-
-            var mp3Data = await textToSpeechService.SynthesizeTextToSpeech(input, apiKey);
-            var audioUrl = await audioUploadService.UploadAudio(mp3Data);
+            var mp3Data = await textToSpeechService.SynthesizeTextToSpeech(input);
+            var audioUrl = await cloudinary.UploadAudio(mp3Data);
             return Results.Ok(audioUrl);
         }
         catch (Exception ex)
@@ -113,5 +109,27 @@ app.MapPost("/generate-captions", async (AssemblyAiService assemblyAiService, [F
             return Results.BadRequest(new { success = false, message = ex.Message });
         }
     });
+
+app.MapPost("/generate-image", async (
+    CloudflareApiService cloudflareApiService,
+    CloudinaryService cloudinary,
+    [FromBody] GenerateImageRequest request) =>
+{
+    if (string.IsNullOrWhiteSpace(request.Prompt))
+    {
+        return Results.BadRequest("Prompt is required.");
+    }
+
+    try
+    {
+        var imageBytes = await cloudflareApiService.GenerateImageAsync(request.Prompt);
+        var imageUrl = await cloudinary.UploadImage(imageBytes);
+        return Results.Ok(imageUrl);
+    }
+    catch (HttpRequestException ex)
+    {
+        return Results.Problem(ex.Message, statusCode: 500);
+    }
+});
 
 app.Run();

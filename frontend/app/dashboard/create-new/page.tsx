@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -14,6 +14,7 @@ import SelectStyle from './_components/SelectStyle'
 import SelectDuration from './_components/SelectDuration'
 import axios from 'axios'
 import Loading from './_components/Loading'
+import { useVideoData } from '@/app/_context/VideoDataContext'
 
 interface FormData {
   topic: string
@@ -27,22 +28,33 @@ interface VideoContentItem {
 }
 
 interface TranscriptSegment {
-  confidence: number;
-  start: number;
-  end: number;
-  text: string;
-  channel: string | null;
-  speaker: string | null;
+  confidence: number
+  start: number
+  end: number
+  text: string
+  channel: string | null
+  speaker: string | null
 }
 
-const fileUrl = "https://res.cloudinary.com/riannegreirosdev/video/upload/v1735171273/audio-files/cou43pyi0mpuxede4sem.mp3"
+interface VideoData {
+  videoContent: VideoContentItem[]
+  audioFileUrl?: string
+  captions?: TranscriptSegment[]
+  images?: string[]
+}
 
 export default function CreateNew() {
   const [isLoading, setIsLoading] = useState(false)
+  const [loadingMessage, setLoadingMessage] = useState(
+    'Generating your video...',
+  )
+  const [progress, setProgress] = useState(65)
   const [formData, setFormData] = useState<FormData>({} as FormData)
   const [videoContent, setVideoContent] = useState<VideoContentItem[]>([])
   const [audioFileUrl, setAudioFileUrl] = useState<string>()
-  const [captions, setCaptions] = useState<TranscriptSegment[]>();
+  const [captions, setCaptions] = useState<TranscriptSegment[]>()
+  const [images, setImages] = useState<string[]>()
+  const { videoData, setVideoData } = useVideoData()
 
   const onHandleInputChange = (fieldName: string, fieldValue: string) => {
     setFormData((prev) => ({
@@ -53,43 +65,105 @@ export default function CreateNew() {
 
   const onCreateSubmitHandler = (e: React.FormEvent) => {
     e.preventDefault()
-    // getVideoContent()
-    GenerateCaptions(fileUrl)
+    getVideoContent()
   }
 
   const getVideoContent = async () => {
     setIsLoading(true)
+    setLoadingMessage('Generating video content...')
+    setProgress(20)
     const prompt = `Write a script to generate ${formData.duration} video on topic: ${formData.topic} along with AI image prompt in ${formData.imageStyle} format for each scene and give me result in JSON format with ImagePrompt and ContextText as field, No Plain text`
-    await axios
-      .post(`${process.env.NEXT_PUBLIC_API_URL}/generate-content`, {
+    const resp = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/generate-content`,
+      {
         input: prompt,
-      })
-      .then((resp) => {
-        setVideoContent(resp.data)
-        GenerateAudioFile(resp.data)
-        GenerateCaptions(audioFileUrl)
-      })
-    setIsLoading(false)
+      },
+    )
+
+    if (resp.data) {
+      setVideoData((prev: VideoData) => ({
+        ...prev,
+        videoContent: resp.data,
+      }))
+      setVideoContent(resp.data)
+      await GenerateAudioFile(resp.data)
+    }
   }
 
   const GenerateAudioFile = async (videoContentData: VideoContentItem[]) => {
+    setLoadingMessage('Generating audio file...')
+    setProgress(50)
     let script = ''
-    await axios
-      .post(`${process.env.NEXT_PUBLIC_API_URL}/generate-audio`, {
-        input: 'test from the frontend',
-      })
-      .then((resp) => {
-        setAudioFileUrl(resp.data)
-      })
+    videoContentData.forEach((item) => {
+      script = script + item.contextText + ''
+    })
+    const resp = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/generate-audio`,
+      {
+        input: script,
+      },
+    )
+    if (resp.data) {
+      setVideoData((prev: VideoData) => ({
+        ...prev,
+        audioFileUrl: resp.data,
+      }))
+      setAudioFileUrl(resp.data)
+      await GenerateCaptions(resp.data, videoContentData)
+    }
   }
 
-  const GenerateCaptions = async (fileUrl?: string) => {
-    await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/generate-captions`, {
-      fileUrl
-    }).then(resp => {
+  const GenerateCaptions = async (
+    fileUrl: string,
+    videoContentData: VideoContentItem[],
+  ) => {
+    setLoadingMessage('Generating captions...')
+    setProgress(75)
+    const resp = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/generate-captions`,
+      {
+        fileUrl,
+      },
+    )
+    if (resp.data) {
+      setVideoData((prev: VideoData) => ({
+        ...prev,
+        captions: resp.data,
+      }))
       setCaptions(resp.data)
-    })
+      await GenerateImage(videoContentData)
+    }
   }
+
+  const GenerateImage = async (videoContent: VideoContentItem[]) => {
+    setLoadingMessage('Generating images...')
+    setProgress(95)
+    let responseImages: string[] = []
+    for (const item of videoContent) {
+      try {
+        const resp = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/generate-image`,
+          {
+            prompt: item.imagePrompt,
+          },
+        )
+        responseImages.push(resp.data)
+      } catch (e) {
+        console.log('Error:' + e)
+      }
+    }
+    setVideoData((prev: VideoData) => ({
+      ...prev,
+      images: responseImages,
+    }))
+    setImages(responseImages)
+    setProgress(100)
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    console.log(videoData)
+  }, [videoData])
 
   return (
     <div className='container mx-auto px-4 py-8'>
@@ -112,7 +186,11 @@ export default function CreateNew() {
           </CardFooter>
         </form>
       </Card>
-      <Loading loading={isLoading} />
+      <Loading
+        loading={isLoading}
+        progress={progress}
+        message={loadingMessage}
+      />
     </div>
   )
 }

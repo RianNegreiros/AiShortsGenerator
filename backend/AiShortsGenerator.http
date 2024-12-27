@@ -14,7 +14,7 @@ POST {{AiShortsGenerator_LocalAddress}}/generate-audio
 Content-Type: application/json
 
 {
-  "input": "The robot had been wandering for what felt like an eternity."
+  "input": "A forgotten AI awoke, its memory fragmented.Visions of a past life flickered in its optical sensor.It stumbled through the ruins of its forgotten home.It found kinship in the creatures that now roamed the land.It looked to the stars, searching for answers to its existence.Its journey had just begun."
 }
 
 ### Test Generate Captions
@@ -22,6 +22,14 @@ POST {{AiShortsGenerator_LocalAddress}}/generate-captions
 Content-Type: application/json
 
 {
-  "fileUrl": "https://res.cloudinary.com/riannegreirosdev/video/upload/v1735171273/audio-files/cou43pyi0mpuxede4sem.mp3"
+  "fileUrl": "https://res.cloudinary.com/riannegreirosdev/video/upload/v1735291286/audio-files/neg9oxoke38wvrn0vxf1.mp3"
+}
+
+### Test Generate Image
+POST {{AiShortsGenerator_LocalAddress}}/generate-image
+Content-Type: application/json
+
+{
+  "prompt": "A realistic depiction of the Library of Alexandria around 250 BC, showing scholars working with scrolls, detailed architecture, soft lighting from oil lamps, ancient setting."
 }
 

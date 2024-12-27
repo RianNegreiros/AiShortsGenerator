@@ -2,9 +2,9 @@ using Google.Cloud.TextToSpeech.V1;
 
 namespace AiShortsGenerator.Services;
 
-public class TextToSpeechService
+public class TextToSpeechService(IConfiguration configuration)
 {
-    public async Task<byte[]> SynthesizeTextToSpeech(string inputText, string apiKey)
+    public async Task<byte[]> SynthesizeTextToSpeech(string inputText)
     {
         if (string.IsNullOrWhiteSpace(inputText))
         {
@@ -13,7 +13,7 @@ public class TextToSpeechService
 
         var client = await new TextToSpeechClientBuilder
         {
-            ApiKey = apiKey,
+            ApiKey = configuration["GoogleApi:TextToSpeechKey"]
         }.BuildAsync();
 
         var input = new SynthesisInput
