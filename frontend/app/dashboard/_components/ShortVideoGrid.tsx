@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Plus, PlusCircle } from 'lucide-react'
-import VideoCard from './VideoCard'
+import { PlusCircle } from 'lucide-react'
 import axios from 'axios'
 import Link from 'next/link'
 import { VideoData } from '@/app/lib/interface'
 import { SkeletonCard } from './SkeletonCard'
+import { MyComposition } from '@/remotion/Composition'
+import { Thumbnail } from '@remotion/player'
+import { VideoPlayerDialog } from './VideoPlayerDialog'
 
 interface ShortVideoGridData extends VideoData {
   id: number
@@ -17,6 +19,8 @@ interface ShortVideoGridData extends VideoData {
 export default function ShortVideoGrid() {
   const [loading, setLoading] = useState(false)
   const [videos, setVideos] = useState<ShortVideoGridData[]>([])
+  const [selectedVideo, setSelectedVideo] = useState<VideoData | null>(null)
+  const [isHovered, setIsHovered] = useState(false)
 
   const GetVideos = async () => {
     setLoading(true)
@@ -37,7 +41,7 @@ export default function ShortVideoGrid() {
   }, [])
 
   if (loading) {
-    return <SkeletonCard />
+    return <SkeletonCard count={10} />
   }
 
   if (videos.length === 0) {
@@ -54,17 +58,36 @@ export default function ShortVideoGrid() {
   }
 
   return (
-    <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
-      {videos.map((video, index) => (
-        <VideoCard
-          key={index}
-          videoContent={video.videoContent}
-          audioFileUrl={video.audioFileUrl}
-          captions={video.captions}
-          images={video.images}
-          id={video.id}
-        />
-      ))}
-    </div>
+    <>
+      <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+        {videos.map((video, index) => (
+          <button
+            key={index}
+            className='relative aspect-square h-[450px] w-[300px] transform overflow-hidden rounded-lg transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary'
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            onClick={() => setSelectedVideo(video)}
+          >
+            <Thumbnail
+              component={MyComposition}
+              compositionWidth={300}
+              compositionHeight={450}
+              frameToDisplay={30}
+              durationInFrames={120}
+              fps={30}
+              inputProps={{
+                ...video,
+                setDurationInFrame: (a: any) => console.log(a),
+              }}
+            />
+          </button>
+        ))}
+      </div>
+      <VideoPlayerDialog
+        isOpen={!!selectedVideo}
+        onClose={() => setSelectedVideo(null)}
+        video={selectedVideo}
+      />
+    </>
   )
 }

@@ -12,25 +12,44 @@ import { Player } from '@remotion/player'
 import { MyComposition } from '@/remotion/Composition'
 import Link from 'next/link'
 import { VideoData } from '@/app/lib/interface'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
 
 interface VideoPlayerDialogProps {
-  playVideo: boolean
-  video: VideoData
+  video: VideoData | null
+  isOpen: boolean
+  onClose: () => void
 }
 
 export function VideoPlayerDialog({
   video,
-  playVideo,
+  isOpen,
+  onClose,
 }: VideoPlayerDialogProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [durationInFrame, setDurationInFrame] = useState(100)
+  const [durationInFrame, setDurationInFrame] = useState(700)
+  const router = useRouter()
 
-  useEffect(() => {
-    setIsOpen(playVideo)
-  }, [playVideo])
+  const exportVideo = async () => {
+    if (!video) return
+    try {
+      const result = await axios.post('/api/render-video', {
+        audioFileUrl: video.audioFileUrl,
+        captions: video.captions,
+        images: video.images,
+      })
+      console.log('Video Rendered:', result.data)
+    } catch (error) {
+      console.error('Error rendering video:', error)
+    }
+  }
+
+  const handleCancel = () => {
+    onClose()
+    router.push('/dashboard')
+  }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className='max-w-xl p-0'>
         <DialogHeader className='border-b p-4'>
           <DialogTitle className='text-lg font-semibold'>
@@ -52,10 +71,7 @@ export function VideoPlayerDialog({
               fps={30}
               controls
               inputProps={{
-                videoContent: video.videoContent,
-                audioFileUrl: video.audioFileUrl,
-                captions: video.captions,
-                images: video.images,
+                ...video,
                 setDurationInFrame: (frameValue: number) =>
                   setDurationInFrame(frameValue),
               }}
@@ -65,15 +81,13 @@ export function VideoPlayerDialog({
 
         <DialogFooter className='flex items-center justify-end gap-4 border-t p-4'>
           <Link href={'/dashboard'}>
-            <Button
-              type='button'
-              variant='secondary'
-              onClick={() => setIsOpen(false)}
-            >
+            <Button type='button' variant='secondary' onClick={handleCancel}>
               Cancel
             </Button>
           </Link>
-          <Button type='button'>Export</Button>
+          <Button type='button' onClick={exportVideo}>
+            Export
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
