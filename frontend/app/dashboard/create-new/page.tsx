@@ -200,7 +200,11 @@ export default function CreateNew() {
         progress={progress}
         message={loadingMessage}
       />
-      <VideoPlayerDialog playVideo={playVideo} video={videoData} />
+      <VideoPlayerDialog
+        isOpen={playVideo}
+        onClose={() => setPlayVideo(false)}
+        video={videoData}
+      />
     </div>
   )
 }
