@@ -10,16 +10,11 @@ import {
   useVideoConfig,
 } from 'remotion'
 
-interface MyCompositionProps extends VideoData {
-  setDurationInFrame: (frameValue: number) => void
-}
-
 export const MyComposition = ({
   audioFileUrl,
   captions,
   images,
-  setDurationInFrame,
-}: MyCompositionProps) => {
+}: VideoData) => {
   const { fps } = useVideoConfig()
   const frame = useCurrentFrame()
   const [durationFrame, setDurationFrame] = useState<number | null>(null)
@@ -29,9 +24,8 @@ export const MyComposition = ({
       const lastSegment = captions[captions.length - 1]
       const calculatedDurationFrame = (lastSegment.end / 1000) * fps
       setDurationFrame(calculatedDurationFrame)
-      setDurationInFrame(calculatedDurationFrame)
     }
-  }, [captions, fps, setDurationInFrame])
+  }, [captions, fps])
 
   if (durationFrame === null) {
     return null

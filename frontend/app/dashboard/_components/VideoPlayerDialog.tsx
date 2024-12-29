@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { VideoData } from '@/app/lib/interface'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import Loading from '../create-new/_components/Loading'
 
 interface VideoPlayerDialogProps {
   video: VideoData | null
@@ -26,20 +27,40 @@ export function VideoPlayerDialog({
   isOpen,
   onClose,
 }: VideoPlayerDialogProps) {
-  const [durationInFrame, setDurationInFrame] = useState(700)
   const router = useRouter()
+  const [outputFileUrl, setOutputFileUrl] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  if (!video || !Array.isArray(video.captions)) {
+    return null
+  }
+
+  const durationInFrame =
+    video.captions.length > 0
+      ? Math.ceil((video.captions[video.captions.length - 1].end / 1000) * 30)
+      : 700
 
   const exportVideo = async () => {
     if (!video) return
+    setIsLoading(true)
+
     try {
       const result = await axios.post('/api/render-video', {
         audioFileUrl: video.audioFileUrl,
         captions: video.captions,
         images: video.images,
       })
+
       console.log('Video Rendered:', result.data)
+
+      if (result.data.outputFile) {
+        setOutputFileUrl(result.data.outputFile)
+        window.open(result.data.outputFile, '_blank')
+      }
     } catch (error) {
       console.error('Error rendering video:', error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -60,6 +81,11 @@ export function VideoPlayerDialog({
           </DialogDescription>
         </DialogHeader>
 
+        <Loading
+          loading={isLoading}
+          showProgress={false}
+          message='Rendering video, please wait...'
+        />
         <div className='flex justify-center p-4'>
           {video && (
             <Player
@@ -72,8 +98,6 @@ export function VideoPlayerDialog({
               controls
               inputProps={{
                 ...video,
-                setDurationInFrame: (frameValue: number) =>
-                  setDurationInFrame(frameValue),
               }}
             />
           )}
