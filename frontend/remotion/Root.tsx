@@ -1,17 +1,25 @@
-import { Composition } from 'remotion'
+import { Composition, getInputProps } from 'remotion'
 import { MyComposition } from './Composition'
+import { VideoData } from '@/app/lib/interface'
 
-export const RemotionRoot: React.FC = () => {
+const { video, durationInFrames } = getInputProps() as {
+  video: VideoData
+  durationInFrames: number
+}
+
+export const RemotionRoot = () => {
   return (
-    <>
-      <Composition
-        id='Empty'
-        component={MyComposition}
-        durationInFrames={60}
-        fps={30}
-        width={1280}
-        height={720}
-      />
-    </>
+    <Composition
+      id='shortVideo'
+      component={MyComposition}
+      durationInFrames={durationInFrames}
+      width={300}
+      height={450}
+      fps={30}
+      inputProps={{
+        ...video,
+        durationInFrames,
+      }}
+    />
   )
 }
