@@ -20,8 +20,21 @@ const options = [
   'Random AI Story',
   'Historical Facts',
   'Fun Facts',
+  'Science Facts',
   'Motivational',
   'Scary Story',
+  'Adventure Story',
+  'Fantasy Story',
+  'Sci-Fi Story',
+  "Steampunk Story",
+  'Romance Story',
+  'Mystery/Thriller Story',
+  "Historical Fiction",
+  'Poems',
+  "Tech Trends",
+  "Philosophical Quotes",
+  "Space Exploration",
+  "Mythology"
 ]
 
 export default function SelectTopic({ onUserSelect }: SelectTopicProps) {
