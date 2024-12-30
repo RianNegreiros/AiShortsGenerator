@@ -117,13 +117,14 @@ dotnet run
 
 ## API Endpoints
 
+- **GET /videos**: Retrieve a list of all videos stored in the database.
 - **POST /generate-content**: Generate video content from user input using Google's Gemini API.
 - **POST /generate-audio**: Convert text input to audio (MP3) using Google Cloud Text-to-Speech API.
 - **POST /generate-captions**: Generate captions for an audio or video file using AssemblyAI.
 - **POST /generate-image**: Generate an image from a text prompt using Cloudflare's AI API.
 - **POST /save-video**: Save a video record to the database.
-- **GET /videos/{id}**: Get details of a video by its ID.
-- **GET /videos**: Retrieve a list of all videos stored in the database.
+- **PUT /videos/{id}**: Update video Output File and Render Id.
+- **DELETE /videos/{id}**: Delete video from the database.
 
 ## Dependencies
 
@@ -149,4 +150,4 @@ dotnet run
 - **Create New Video**: Users can define the video topic, style, and duration, and the app will generate the video content, audio, captions, and images using AI.
 ![Image of the create new video page](./_docs/create-new.png)
 - **Video Preview & Export**: After the video is generated, users can preview it in the dialog and export it once rendered.
-![Image of the preview and export video](./_docs/preview-video.png)
+![Image of the preview, export and delete video](./_docs/preview-video.png)

@@ -19,8 +19,9 @@ Table of Contents
     -   [POST /generate-captions](#post-generate-captions)
     -   [POST /generate-image](#post-generate-image)
     -   [POST /save-video](#post-save-video)
-    -   [GET /videos/{id}](#get-videosid)
+    -   [PUT /videos/{id}](#put-videosid)
     -   [GET /videos](#get-videos)
+    -   [DELETE /videos/{id}](#get-videosid)
 -   [Database Schema](#database-schema)
 
 Project Overview
@@ -67,6 +68,7 @@ Ensure you have the following set up:
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet).
 - [PostgreSQL](https://www.postgresql.org/download/) for the database. I used [Neon Serverless Postgres](https://neon.tech/)
+- [Gemini](https://ai.google.dev/gemini-api/docs/quickstart?lang=rest) API key.
 - [Text-to-Speech AI](https://cloud.google.com/text-to-speech) API key.
 - [Cloudinary](https://cloudinary.com/) account and API key.
 - [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/) account and API key. I used [flux-1-schnell Model](https://developers.cloudflare.com/workers-ai/models/flux-1-schnell/)
@@ -223,15 +225,29 @@ Ensure you have the following set up:
 
     - Response: Success message with video ID.
 
-6. **GET /videos/{id}**
+6. **PUT /videos/{id}**
 
-    - Description: Get details of a video by its ID.
-    - Response: Video details in JSON format.
+    - Description: Update a video by its ID.
+    - Request Body:
+
+      ```json
+      {
+        "OutputFile": "https://your-aws-s3-bucket-url/out.mp4",
+        "RenderId": "8hfxlw"
+      }
+      ```
+
+    - Response: Success message with video updated.
 
 7. **GET /videos**
 
     - Description: Retrieve a list of all videos stored in the database.
     - Response: List of videos.
+
+8. **DELETE /videos/{id}**
+
+   - Description: Delete the video in the database.
+   - Response: Not content message.
 
 ## Database Structure
 
