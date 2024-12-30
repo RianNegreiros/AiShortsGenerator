@@ -21,6 +21,30 @@ const options = [
     name: 'WaterColor',
     image: '/images/watercolor.png',
   },
+  {
+    name: 'Drawing',
+    image: '/images/drawing.png',
+  },
+  {
+    name: 'Monochrome',
+    image: '/images/monochrome.png',
+  },
+  {
+    name: 'Oil Painting',
+    image: '/images/oil-painting.png',
+  },
+  {
+    name: 'Pixel Art',
+    image: '/images/pixel-art.png',
+  },
+  {
+    name: 'retro',
+    image: '/images/retro.png',
+  },
+  {
+    name: 'Surreal',
+    image: '/images/surreal.png',
+  },
 ]
 
 type SelectStyleProps = {
@@ -43,19 +67,17 @@ export default function SelectStyle({ onUserSelect }: SelectStyleProps) {
               onUserSelect('imageStyle', item.name)
             }}
             key={index}
-            className={`cursor-pointer transition-all ${
-              selectOption === item.name
+            className={`cursor-pointer transition-all ${selectOption === item.name
                 ? 'border-4 border-black dark:border-white'
                 : 'hover:scale-105'
-            }`}
+              }`}
           >
             <div className='relative aspect-square w-full'>
               <div className='absolute inset-0'>
                 <Image
                   alt='Image'
-                  className={`h-auto w-full rounded-lg object-cover ${
-                    selectOption === item.name ? 'opacity-50' : 'opacity-100'
-                  }`}
+                  className={`h-auto w-full rounded-lg object-cover ${selectOption === item.name ? 'opacity-50' : 'opacity-100'
+                    }`}
                   height='1024'
                   src={item.image}
                   width='1024'
