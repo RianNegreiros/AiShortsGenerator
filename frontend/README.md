@@ -29,10 +29,11 @@ This project is a frontend for generating short videos using AI. It allows users
 
 1. Clone the repository to your local machine:
 
-  ```bash
-   git clone https://github.com/RianNegreiros/AiShortsVideosGenerator.git
-   cd frontend
-  ```
+```bash
+ git clone https://github.com/RianNegreiros/AiShortsVideosGenerator.git
+ cd frontend
+```
+
 2. Install dependencies:
 
 ```bash
@@ -40,6 +41,7 @@ npm install
 ```
 
 ## Environment Variables
+
 Before starting the app, make sure you configure the following environment variables in your `.env` file:
 
 ```plaintext
@@ -50,6 +52,7 @@ Before starting the app, make sure you configure the following environment varia
 To get the AWS Serve URL follow this [guide](https://www.remotion.dev/docs/lambda/setup) from the remotion docs
 
 ## Development
+
 To run the application in development mode, use the following command:
 
 ```bash
@@ -59,6 +62,7 @@ npm run dev
 This will start the app on http://localhost:3000 by default. You can modify the port by setting the PORT environment variable.
 
 ## Building for Production
+
 To build the application for production, use the following command:
 
 ```bash
@@ -67,6 +71,7 @@ npm run start
 ```
 
 ## Dependencies
+
 - **Next.js**: React framework for building server-side rendered applications.
 - **TailwindCSS**: Utility-first CSS framework for styling the app.
 - **Remotion**: Library for creating videos programmatically with React.
@@ -74,6 +79,7 @@ npm run start
 - **shadcn**: A collection of re-usable components that you can copy and paste into your apps.
 
 ## Usage
+
 1. **Dashboard**: Users can view and manage generated short videos.
 2. **Create New Video**: Users can define the video topic, style, and duration, and the app will generate the video content, audio, captions, and images using AI.
 3. **Video Preview & Export**: After the video is generated, users can preview it in the dialog and export it once rendered.
