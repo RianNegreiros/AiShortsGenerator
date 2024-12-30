@@ -14,18 +14,21 @@ import Link from 'next/link'
 import { VideoData } from '@/app/lib/interface'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import Loading from '../create-new/_components/Loading'
+import Loading from './Loading'
+import { Download, Trash, X } from 'lucide-react'
 
 interface VideoPlayerDialogProps {
   video: VideoData | null
   isOpen: boolean
   onClose: () => void
+  refreshVideos?: () => void
 }
 
 export function VideoPlayerDialog({
   video,
   isOpen,
   onClose,
+  refreshVideos,
 }: VideoPlayerDialogProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -78,6 +81,23 @@ export function VideoPlayerDialog({
     router.push('/dashboard')
   }
 
+  const handleDelete = async () => {
+    onClose()
+    try {
+      await axios.delete('/api/delete-video', {
+        data: {
+          videoId: video.id,
+          renderId: video.renderId,
+        },
+      })
+      if (refreshVideos) {
+        refreshVideos()
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className='max-w-xl p-0'>
@@ -86,7 +106,8 @@ export function VideoPlayerDialog({
             Generated Video
           </DialogTitle>
           <DialogDescription>
-            Preview your generated video. You can export or cancel.
+            Preview your generated video. You can export, delete or cancel to go
+            back the dashboard.
           </DialogDescription>
         </DialogHeader>
 
@@ -112,24 +133,30 @@ export function VideoPlayerDialog({
           )}
         </div>
 
-        <DialogFooter className='flex items-center justify-end gap-4 border-t p-4'>
-          <Link href={'/dashboard'}>
+        <DialogFooter className='gap-4 border-t p-4 sm:justify-between'>
+          <Button type='button' variant='destructive' onClick={handleDelete}>
+            <Trash className='mr-2 h-4 w-4' />
+            Delete
+          </Button>
+          <div className='flex space-x-2'>
             <Button type='button' variant='secondary' onClick={handleCancel}>
+              <X className='mr-2 h-4 w-4' />
               Cancel
             </Button>
-          </Link>
-          {outputFileUrl ? (
-            <Button
-              type='button'
-              onClick={() => window.open(outputFileUrl, '_blank')}
-            >
-              Open
-            </Button>
-          ) : (
-            <Button type='button' onClick={exportVideo}>
-              Export
-            </Button>
-          )}
+            {outputFileUrl ? (
+              <Button
+                type='button'
+                onClick={() => window.open(outputFileUrl, '_blank')}
+              >
+                Open
+              </Button>
+            ) : (
+              <Button type='button' onClick={exportVideo}>
+                <Download className='mr-2 h-4 w-4' />
+                Export
+              </Button>
+            )}
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

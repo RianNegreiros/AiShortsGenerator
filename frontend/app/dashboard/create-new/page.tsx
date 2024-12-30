@@ -13,8 +13,8 @@ import SelectTopic from './_components/SelectTopic'
 import SelectStyle from './_components/SelectStyle'
 import SelectDuration from './_components/SelectDuration'
 import axios from 'axios'
-import Loading from './_components/Loading'
-import { VideoPlayerDialog } from '../_components/VideoPlayerDialog'
+import Loading from '@/app/components/Loading'
+import { VideoPlayerDialog } from '@/app/components/VideoPlayerDialog'
 import { VideoContentItem, VideoData } from '@/app/lib/interface'
 
 interface FormData {
@@ -32,12 +32,10 @@ export default function CreateNew() {
   const [formData, setFormData] = useState<FormData>({} as FormData)
   const [playVideo, setPlayVideo] = useState(false)
   const [videoData, setVideoData] = useState<VideoData>({
-    id: 0,
     videoContent: [],
     audioFileUrl: '',
     captions: [],
     images: [],
-    outputFile: '',
   })
 
   useEffect(() => {
