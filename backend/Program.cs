@@ -96,7 +96,7 @@ app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, C
         }
     })
     .WithName("GenerateAudio")
-    .Produces(200)
+    .Produces<string>(200)
     .Produces(400);
 
 app.MapPost("/generate-captions", async (AssemblyAiService assemblyAiService, [FromBody] JsonElement body) =>
@@ -123,12 +123,12 @@ app.MapPost("/generate-captions", async (AssemblyAiService assemblyAiService, [F
         {
             return Results.BadRequest(new { success = false, message = ex.Message });
         }
-    });
+    })
+    .WithName("GenerateCaptions")
+    .Produces<string>(200)
+    .Produces(400);
 
-app.MapPost("/generate-image", async (
-    CloudflareApiService cloudflareApiService,
-    CloudinaryService cloudinary,
-    [FromBody] GenerateImageRequest request) =>
+app.MapPost("/generate-image", async (CloudflareApiService cloudflareApiService, CloudinaryService cloudinary, [FromBody] GenerateImageRequest request) =>
 {
     if (string.IsNullOrWhiteSpace(request.Prompt))
     {
@@ -145,7 +145,11 @@ app.MapPost("/generate-image", async (
     {
         return Results.Problem(ex.Message, statusCode: 500);
     }
-});
+})
+.WithName("GenerateImage")
+.Produces<string>(200)
+.Produces(400)
+.Produces(500);
 
 app.MapPost("/save-video", async ([FromBody] Video video, AppDbContext context) =>
 {
@@ -153,21 +157,40 @@ app.MapPost("/save-video", async ([FromBody] Video video, AppDbContext context) 
     await context.SaveChangesAsync();
 
     return Results.Ok(new { message = "Video saved successfully", videoId = video.Id });
-});
+})
+.WithName("SaveVideo")
+.Produces(200);
 
-app.MapGet("/videos/{id:int}", async (int id, AppDbContext context) =>
+app.MapPost("/videos/{id:int}", async (int id, AppDbContext context, [FromBody] UpdateVideoRequest request) =>
 {
     var video = await context.Videos.FirstOrDefaultAsync(v => v.Id == id);
 
-    return video == null ? Results.NotFound() : Results.Ok(video);
-});
+    if (video == null)
+    {
+        return Results.NotFound();
+    }
+
+    if (string.IsNullOrEmpty(request.OutputFile))
+    {
+        return Results.Ok(video);
+    }
+
+    video.OutputFile = request.OutputFile;
+    await context.SaveChangesAsync();
+
+    return Results.Ok(video);
+})
+.WithName("UpdateVideo")
+.Produces<Video>(200)
+.Produces(404);
 
 app.MapGet("/videos", async (AppDbContext context) =>
 {
     var videos = await context.Videos.ToListAsync();
 
     return Results.Ok(videos);
-});
-
+})
+.WithName("GetVideos")
+.Produces<List<Video>>(200);
 
 app.Run();

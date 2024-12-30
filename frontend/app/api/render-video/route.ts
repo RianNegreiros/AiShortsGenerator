@@ -5,6 +5,7 @@ import {
 } from '@remotion/lambda/client'
 import { VideoData } from '@/app/lib/interface'
 import { NextRequest, NextResponse } from 'next/server'
+import axios from 'axios'
 
 const serveUrl = process.env.REMOTION_AWS_SERVE_URL
 
@@ -16,7 +17,7 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const { audioFileUrl, captions, images }: VideoData = await req.json()
+  const { id, audioFileUrl, captions, images }: VideoData = await req.json()
 
   try {
     const functions = await getFunctions({
@@ -61,8 +62,12 @@ export async function POST(req: NextRequest) {
       })
 
       if (progress.done) {
-        console.log('Render finished!', progress.outputFile)
-        return NextResponse.json({ outputFile: progress.outputFile })
+        const outputFile = progress.outputFile
+        console.log('Render finished!', outputFile)
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/videos/${id}`, {
+          outputFile
+        })
+        return NextResponse.json({ outputFile: outputFile })
       }
 
       if (progress.fatalErrorEncountered) {

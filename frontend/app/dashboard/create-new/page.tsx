@@ -32,10 +32,12 @@ export default function CreateNew() {
   const [formData, setFormData] = useState<FormData>({} as FormData)
   const [playVideo, setPlayVideo] = useState(false)
   const [videoData, setVideoData] = useState<VideoData>({
+    id: 0,
     videoContent: [],
     audioFileUrl: '',
     captions: [],
     images: [],
+    outputFile: ''
   })
 
   useEffect(() => {

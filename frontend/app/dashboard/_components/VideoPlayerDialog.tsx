@@ -28,11 +28,19 @@ export function VideoPlayerDialog({
   onClose,
 }: VideoPlayerDialogProps) {
   const router = useRouter()
-  const [outputFileUrl, setOutputFileUrl] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [outputFileUrl, setOutputFileUrl] = useState<string | null>(null)
 
-  if (!video || !Array.isArray(video.captions)) {
-    return null
+  useEffect(() => {
+    if (video?.outputFile) {
+      setOutputFileUrl(video.outputFile)
+    } else {
+      setOutputFileUrl(null)
+    }
+  }, [video]);
+
+  if (!video) {
+    return null;
   }
 
   const durationInFrame =
@@ -46,6 +54,7 @@ export function VideoPlayerDialog({
 
     try {
       const result = await axios.post('/api/render-video', {
+        id: video.id,
         audioFileUrl: video.audioFileUrl,
         captions: video.captions,
         images: video.images,
@@ -109,9 +118,18 @@ export function VideoPlayerDialog({
               Cancel
             </Button>
           </Link>
-          <Button type='button' onClick={exportVideo}>
-            Export
-          </Button>
+          {outputFileUrl ? (
+            <Button
+              type='button'
+              onClick={() => window.open(outputFileUrl, '_blank')}
+            >
+              Open
+            </Button>
+          ) : (
+            <Button type='button' onClick={exportVideo}>
+              Export
+            </Button>
+          )}
         </DialogFooter>
       </DialogContent>
     </Dialog>
