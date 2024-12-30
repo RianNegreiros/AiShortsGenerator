@@ -82,4 +82,4 @@ npm run start
 
 1. **Dashboard**: Users can view and manage generated short videos.
 2. **Create New Video**: Users can define the video topic, style, and duration, and the app will generate the video content, audio, captions, and images using AI.
-3. **Video Preview & Export**: After the video is generated, users can preview it in the dialog and export it once rendered.
+3. **Video Preview, Export & Delete**: After the video is generated, users can preview it in the dialog and export it once rendered or deleted it.
