@@ -37,7 +37,7 @@ export default function CreateNew() {
     audioFileUrl: '',
     captions: [],
     images: [],
-    outputFile: ''
+    outputFile: '',
   })
 
   useEffect(() => {
@@ -67,7 +67,9 @@ export default function CreateNew() {
     setIsLoading(true)
     setLoadingMessage('Generating video content...')
     setProgress(20)
-    const prompt = `Write a script to generate ${formData.duration} video on topic: ${formData.topic} along with AI image prompt in ${formData.imageStyle} format for each scene and give me result in JSON format with ImagePrompt and ContextText as field, No Plain text`
+
+    const prompt = `Generate a script for a ${formData.duration} video on the topic '${formData.topic}'. For each scene, provide the following in JSON format:[{'ContextText': '<Description of the scene>','ImagePrompt': '<AI image generation prompt in ${formData.imageStyle} style>'}]Ensure all fields are well-structured, without plain text outside the JSON.`
+
     const resp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/generate-content`,
       {

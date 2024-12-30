@@ -67,17 +67,19 @@ export default function SelectStyle({ onUserSelect }: SelectStyleProps) {
               onUserSelect('imageStyle', item.name)
             }}
             key={index}
-            className={`cursor-pointer transition-all ${selectOption === item.name
+            className={`cursor-pointer transition-all ${
+              selectOption === item.name
                 ? 'border-4 border-black dark:border-white'
                 : 'hover:scale-105'
-              }`}
+            }`}
           >
             <div className='relative aspect-square w-full'>
               <div className='absolute inset-0'>
                 <Image
                   alt='Image'
-                  className={`h-auto w-full rounded-lg object-cover ${selectOption === item.name ? 'opacity-50' : 'opacity-100'
-                    }`}
+                  className={`h-auto w-full rounded-lg object-cover ${
+                    selectOption === item.name ? 'opacity-50' : 'opacity-100'
+                  }`}
                   height='1024'
                   src={item.image}
                   width='1024'

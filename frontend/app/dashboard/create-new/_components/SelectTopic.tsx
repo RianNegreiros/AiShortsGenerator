@@ -26,15 +26,15 @@ const options = [
   'Adventure Story',
   'Fantasy Story',
   'Sci-Fi Story',
-  "Steampunk Story",
+  'Steampunk Story',
   'Romance Story',
   'Mystery/Thriller Story',
-  "Historical Fiction",
+  'Historical Fiction',
   'Poems',
-  "Tech Trends",
-  "Philosophical Quotes",
-  "Space Exploration",
-  "Mythology"
+  'Tech Trends',
+  'Philosophical Quotes',
+  'Space Exploration',
+  'Mythology',
 ]
 
 export default function SelectTopic({ onUserSelect }: SelectTopicProps) {

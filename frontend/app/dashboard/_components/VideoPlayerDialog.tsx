@@ -37,10 +37,10 @@ export function VideoPlayerDialog({
     } else {
       setOutputFileUrl(null)
     }
-  }, [video]);
+  }, [video])
 
   if (!video) {
-    return null;
+    return null
   }
 
   const durationInFrame =

@@ -6,7 +6,7 @@ POST {{AiShortsGenerator_LocalAddress}}/generate-content
 Content-Type: application/json
 
 {
-  "input": "Write a script to generate 30 seconds video on topic: Ai Random Story along with AI image prompt in Realistic format for each scene and give me result in JSON format with ImagePrompt and ContextText as field, No Plain text"
+  "input": "Generate a script for a 15 seconds video on the topic 'Space Exploration'. For each scene, provide the following in JSON format:[{ContextText: <Description of the scene>, ImagePrompt: <AI image generation prompt in Surreal style>}]Ensure all fields are well-structured, without plain text outside the JSON."
 }
 
 ### Test the Text-to-Speech API
