@@ -13,8 +13,10 @@ export interface TranscriptSegment {
 }
 
 export interface VideoData {
+  id: number
   videoContent: VideoContentItem[]
   audioFileUrl: string
   captions: TranscriptSegment[]
   images: string[]
+  outputFile: string
 }
