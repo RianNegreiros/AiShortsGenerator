@@ -18,4 +18,5 @@ public class Video
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public string? OutputFile { get; set; }
+    public string? RenderId { get; set; }
 }
