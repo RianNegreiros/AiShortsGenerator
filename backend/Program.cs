@@ -73,7 +73,7 @@ app.MapPost("/generate-content", async (GeminiApiService googleApiService, [From
         }
     })
     .WithName("GenerateContent")
-    .Produces<List<VideoContentItem>>(200)
+    .Produces<List<VideoContentItem>>()
     .Produces(400);
 
 app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, CloudinaryService cloudinary, [FromBody] JsonElement body) =>
@@ -96,7 +96,7 @@ app.MapPost("/generate-audio", async (TextToSpeechService textToSpeechService, C
         }
     })
     .WithName("GenerateAudio")
-    .Produces<string>(200)
+    .Produces<string>()
     .Produces(400);
 
 app.MapPost("/generate-captions", async (AssemblyAiService assemblyAiService, [FromBody] JsonElement body) =>
@@ -125,7 +125,7 @@ app.MapPost("/generate-captions", async (AssemblyAiService assemblyAiService, [F
         }
     })
     .WithName("GenerateCaptions")
-    .Produces<string>(200)
+    .Produces<string>()
     .Produces(400);
 
 app.MapPost("/generate-image", async (CloudflareApiService cloudflareApiService, CloudinaryService cloudinary, [FromBody] GenerateImageRequest request) =>
@@ -147,7 +147,7 @@ app.MapPost("/generate-image", async (CloudflareApiService cloudflareApiService,
     }
 })
 .WithName("GenerateImage")
-.Produces<string>(200)
+.Produces<string>()
 .Produces(400)
 .Produces(500);
 
@@ -161,7 +161,7 @@ app.MapPost("/save-video", async ([FromBody] Video video, AppDbContext context) 
 .WithName("SaveVideo")
 .Produces(200);
 
-app.MapPost("/videos/{id:int}", async (int id, AppDbContext context, [FromBody] UpdateVideoRequest request) =>
+app.MapPut("/videos/{id:int}", async (int id, AppDbContext context, [FromBody] UpdateVideoRequest request) =>
 {
     var video = await context.Videos.FirstOrDefaultAsync(v => v.Id == id);
 
@@ -176,12 +176,13 @@ app.MapPost("/videos/{id:int}", async (int id, AppDbContext context, [FromBody] 
     }
 
     video.OutputFile = request.OutputFile;
+    video.RenderId = request.RenderId;
     await context.SaveChangesAsync();
 
     return Results.Ok(video);
 })
 .WithName("UpdateVideo")
-.Produces<Video>(200)
+.Produces<Video>()
 .Produces(404);
 
 app.MapGet("/videos", async (AppDbContext context) =>
@@ -191,6 +192,24 @@ app.MapGet("/videos", async (AppDbContext context) =>
     return Results.Ok(videos);
 })
 .WithName("GetVideos")
-.Produces<List<Video>>(200);
+.Produces<List<Video>>();
+
+app.MapDelete("/videos/{id:int}", async (int id, AppDbContext context) =>
+{
+    var video = await context.Videos.FirstOrDefaultAsync(v => v.Id == id);
+
+    if (video == null)
+    {
+        return Results.NotFound();
+    }
+
+    context.Videos.Remove(video);
+    await context.SaveChangesAsync();
+
+    return Results.NoContent();
+})
+.WithName("DeleteVideo")
+.Produces(204)
+.Produces(404);
 
 app.Run();

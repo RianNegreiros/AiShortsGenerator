@@ -9,10 +9,9 @@ import { VideoData } from '@/app/lib/interface'
 import { SkeletonCard } from './SkeletonCard'
 import { MyComposition } from '@/remotion/Composition'
 import { Thumbnail } from '@remotion/player'
-import { VideoPlayerDialog } from './VideoPlayerDialog'
+import { VideoPlayerDialog } from '@/app/components/VideoPlayerDialog'
 
 interface ShortVideoGridData extends VideoData {
-  id: number
   createdAt: string
 }
 
@@ -87,6 +86,7 @@ export default function ShortVideoGrid() {
         isOpen={!!selectedVideo}
         onClose={() => setSelectedVideo(null)}
         video={selectedVideo}
+        refreshVideos={GetVideos}
       />
     </>
   )

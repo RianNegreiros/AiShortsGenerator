@@ -64,8 +64,9 @@ export async function POST(req: NextRequest) {
       if (progress.done) {
         const outputFile = progress.outputFile
         console.log('Render finished!', outputFile)
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/videos/${id}`, {
+        await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/videos/${id}`, {
           outputFile,
+          renderId,
         })
         return NextResponse.json({ outputFile: outputFile })
       }
