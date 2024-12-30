@@ -33,8 +33,13 @@ Content-Type: application/json
   "prompt": "A realistic depiction of the Library of Alexandria around 250 BC, showing scholars working with scrolls, detailed architecture, soft lighting from oil lamps, ancient setting."
 }
 
-### Test Get Video by Id
-GET {{AiShortsGenerator_LocalAddress}}/videos/1
+### Test Save Video output file
+POST {{AiShortsGenerator_LocalAddress}}/videos/58
+Content-Type: application/json
+
+{
+  "outputFile": "https://s3.us-east-1.amazonaws.com/remotionlambda-useast1-gafocltvoz/renders/bmf1iwmgdk/out.mp4"
+}
 
 ### Test Save Video
 POST {{AiShortsGenerator_LocalAddress}}/save-video
