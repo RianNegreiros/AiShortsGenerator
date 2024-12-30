@@ -17,5 +17,5 @@ public class Video
     public List<string> Images { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public string OutputFile { get; set; }
+    public string? OutputFile { get; set; }
 }
