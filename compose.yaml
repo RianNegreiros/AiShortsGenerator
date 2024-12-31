@@ -1,5 +1,5 @@
 ﻿services:
-  app:
+  backend:
     image: backend 
     build:
       context: ./backend
@@ -8,3 +8,12 @@
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+  frontend:
+    image: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "3000:3000"

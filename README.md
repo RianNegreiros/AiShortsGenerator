@@ -9,6 +9,7 @@ This is a monorepo project that includes both the [frontend](./frontend/README.m
 - [Installation](#installation)
 - [Environment Variables](#environment-variables)
 - [Development](#development)
+- [Docker](#docker)
 - [API Endpoints](#api-endpoints)
 - [Dependencies](#dependencies)
 - [Usage](#usage)
@@ -28,11 +29,11 @@ This is a monorepo project that includes both the [frontend](./frontend/README.m
 
 ## Requirements
 
-- Node.js (v18.x or above)
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet) or later
-- [PostgreSQL](https://www.postgresql.org/download/) for the database
+- Node.js (v22.x)
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet)
+- [PostgreSQL](https://www.postgresql.org/download/) for the database. I used [Neon Serverless Postgres](https://neon.tech/)
 - [Cloudinary](https://cloudinary.com/) account and API key
-- [Cloudflare](https://www.cloudflare.com/) account and API key
+- [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/) account and API key. I used [flux-1-schnell Model](https://developers.cloudflare.com/workers-ai/models/flux-1-schnell/)
 - [AssemblyAI](https://www.assemblyai.com/) API key
 
 ## Installation
@@ -65,9 +66,11 @@ Configure the following environment variables for both frontend and backend:
 ### Frontend (`.env.local`)
 
 ```plaintext
-NEXT_PUBLIC_API_URL=http://localhost:5211
-REMOTION_AWS_SERVE_URL=<Your AWS Serve URL for Remotion>
+  NEXT_PUBLIC_API_URL=http://localhost:5211
+  REMOTION_AWS_SERVE_URL=<Your AWS Serve URL for Remotion>
 ```
+
+Check the [Remotion setup lambda guide](https://www.remotion.dev/docs/lambda/setup) to get the `REMOTION_AWS_SERVE_URL` variable.
 
 ### Backend (appsettings.json)
 ```json
@@ -78,7 +81,6 @@ REMOTION_AWS_SERVE_URL=<Your AWS Serve URL for Remotion>
       "Microsoft.AspNetCore": "Warning"
     }
   },
-  "BaseUrl": "http://localhost:5211",
   "GoogleApi": {
     "GeminiKey": "your-gemini-api-key",
     "TextToSpeechKey": "your-text-to-speech-api-key"
@@ -111,8 +113,26 @@ npm run dev
 To run the backend application:
 
 ```bash
+cd backend
 dotnet ef database update
 dotnet run
+```
+
+## Docker
+To run the application in Docker:
+
+Configure the following environment variables:
+
+(`.env.local`)
+
+```plaintext
+  NEXT_PUBLIC_API_URL=http://localhost:8080
+```
+
+Then run:
+
+```bash
+  docker compose up
 ```
 
 ## API Endpoints
