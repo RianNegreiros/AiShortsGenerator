@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import axios from 'axios'
+
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -9,15 +11,15 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import Loading from '@/app/components/Loading'
+import { VideoPlayerDialog } from '@/app/components/VideoPlayerDialog'
+import type { VideoContentItem, VideoData } from '@/app/lib/interface'
+
 import SelectTopic from './_components/SelectTopic'
 import SelectStyle from './_components/SelectStyle'
 import SelectDuration from './_components/SelectDuration'
-import axios from 'axios'
-import Loading from '@/app/components/Loading'
-import { VideoPlayerDialog } from '@/app/components/VideoPlayerDialog'
-import { VideoContentItem, VideoData } from '@/app/lib/interface'
 
-interface FormData {
+type FormData = {
   topic: string
   imageStyle: string
   duration: string
@@ -66,7 +68,7 @@ export default function CreateNew() {
     setLoadingMessage('Generating video content...')
     setProgress(20)
 
-    const prompt = `Generate a script for a ${formData.duration} video on the topic '${formData.topic}'. For each scene, provide the following in JSON format:[{'ContextText': '<Description of the scene>','ImagePrompt': '<AI image generation prompt in ${formData.imageStyle} style>'}]Ensure all fields are well-structured, without plain text outside the JSON.`
+    const prompt = `Generate a script for a video lasting ${formData.duration} seconds on the topic '${formData.topic}'. For each scene, provide the following in JSON format: [{'ContextText': '<Description of the scene (concise and fitting the duration)>','ImagePrompt': '<AI image generation prompt in ${formData.imageStyle} style>'}] Ensure all fields are well-structured, and do not include plain text outside the JSON.`;
 
     const resp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/generate-content`,
@@ -151,7 +153,7 @@ export default function CreateNew() {
       'Generating images... This part can take a minute or two.',
     )
     setProgress(90)
-    let responseImages: string[] = []
+    const responseImages: string[] = []
     for (const item of videoContent) {
       try {
         const resp = await axios.post(

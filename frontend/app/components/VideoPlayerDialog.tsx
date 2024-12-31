@@ -1,4 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Player } from '@remotion/player'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
+import { Download, Trash, X } from 'lucide-react'
+
 import {
   Dialog,
   DialogContent,
@@ -8,16 +13,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { Player } from '@remotion/player'
 import { MyComposition } from '@/remotion/Composition'
-import Link from 'next/link'
-import { VideoData } from '@/app/lib/interface'
-import axios from 'axios'
-import { useRouter } from 'next/navigation'
-import Loading from './Loading'
-import { Download, Trash, X } from 'lucide-react'
+import type { VideoData } from '@/app/lib/interface'
 
-interface VideoPlayerDialogProps {
+import Loading from './Loading'
+
+type VideoPlayerDialogProps = {
   video: VideoData | null
   isOpen: boolean
   onClose: () => void
@@ -135,12 +136,12 @@ export function VideoPlayerDialog({
 
         <DialogFooter className='gap-4 border-t p-4 sm:justify-between'>
           <Button type='button' variant='destructive' onClick={handleDelete}>
-            <Trash className='mr-2 h-4 w-4' />
+            <Trash className='mr-2 size-4' />
             Delete
           </Button>
           <div className='flex space-x-2'>
             <Button type='button' variant='secondary' onClick={handleCancel}>
-              <X className='mr-2 h-4 w-4' />
+              <X className='mr-2 size-4' />
               Cancel
             </Button>
             {outputFileUrl ? (
@@ -152,7 +153,7 @@ export function VideoPlayerDialog({
               </Button>
             ) : (
               <Button type='button' onClick={exportVideo}>
-                <Download className='mr-2 h-4 w-4' />
+                <Download className='mr-2 size-4' />
                 Export
               </Button>
             )}

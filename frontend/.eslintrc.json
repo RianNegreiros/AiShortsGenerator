@@ -1,0 +1,93 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "ecmaVersion": 2024,
+    "ecmaFeatures": {
+      "jsx": true,
+      "arrowFunctions": true
+    },
+    "sourceType": "module"
+  },
+  "ignorePatterns": ["node_modules", "build", "dist", "public", "components"],
+  "extends": [
+    "next",
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:tailwindcss/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "plugins": ["react", "tailwindcss", "@typescript-eslint"],
+  "rules": {
+    // Disallow the use of variables that are defined but never used
+    "no-unused-vars": "warn",
+    // Prefer using === and !== over == and !=
+    "eqeqeq": ["warn", "always"],
+    // Prefer using const and let over var
+    "no-var": "error",
+
+    // Prefer using arrow functions for callbacks
+    "prefer-arrow-callback": ["warn", { "allowNamedFunctions": false }],
+    // Prefer using function expressions instead of function declarations
+    "func-style": ["warn", "expression", { "allowArrowFunctions": true }],
+
+    // React specific rules
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/no-array-index-key": "error",
+    "react/self-closing-comp": "warn",
+    "react/no-unescaped-entities": "error",
+    "react/jsx-no-target-blank": "error",
+    "react/jsx-no-useless-fragment": ["warn", { "allowExpressions": true }],
+    "react/sort-comp": "error",
+
+    // React hooks specific rules
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "error",
+
+    // Next.js specific rules
+    "@next/no-img-element": "off",
+
+    // TypeScript specific rules
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/consistent-type-exports": "error",
+    "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+
+    // Imports specific rules
+    "sort-imports": [
+      "error",
+      {
+        "ignoreCase": true,
+        "ignoreDeclarationSort": true,
+        "ignoreMemberSort": false
+      }
+    ],
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal"],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "external",
+            "position": "before"
+          }
+        ],
+        "newlines-between": "always"
+      }
+    ]
+  }
+}

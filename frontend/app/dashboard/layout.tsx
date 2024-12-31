@@ -1,9 +1,11 @@
+import { cookies } from 'next/headers'
+
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
-import { cookies } from 'next/headers'
+
 import DashboardSidebar from '../components/DashboardSidebar'
 
 export default async function DashboardLayout({

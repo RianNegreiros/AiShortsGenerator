@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ArrowLeft, FileVideo, LayoutDashboard } from 'lucide-react'
 
 import {
   Sidebar,
@@ -12,8 +13,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
-
-import { ArrowLeft, LayoutDashboard, FileVideo } from 'lucide-react'
 
 // Menu items.
 const items = [

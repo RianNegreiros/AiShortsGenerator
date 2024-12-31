@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+
 import { Label } from '@/components/ui/label'
 import {
   Select,
@@ -10,10 +11,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-
-type SelectTopicProps = {
-  onUserSelect: (fieldName: string, fieldValue: string) => void
-}
 
 const options = [
   'Custom Prompt',
@@ -37,6 +34,11 @@ const options = [
   'Mythology',
 ]
 
+type SelectTopicProps = {
+  // eslint-disable-next-line no-unused-vars
+  onUserSelect: (fieldName: string, fieldValue: string) => void
+}
+
 export default function SelectTopic({ onUserSelect }: SelectTopicProps) {
   const [contentType, setContentType] = useState('')
   return (
@@ -57,14 +59,14 @@ export default function SelectTopic({ onUserSelect }: SelectTopicProps) {
           <SelectValue placeholder='Select content type' />
         </SelectTrigger>
         <SelectContent>
-          {options.map((item, index) => (
-            <SelectItem key={index} value={item}>
+          {options.map((item) => (
+            <SelectItem key={item} value={item}>
               {item}
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
-      {contentType == 'Custom Prompt' && (
+      {contentType === 'Custom Prompt' && (
         <Textarea
           onChange={(e) => onUserSelect('topic', e.target.value)}
           placeholder='Write your custom prompt'

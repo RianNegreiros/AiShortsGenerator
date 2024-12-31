@@ -16,9 +16,8 @@ export const RemotionRoot = () => {
       width={300}
       height={450}
       fps={30}
-      inputProps={{
+      defaultProps={{
         ...video,
-        durationInFrames,
       }}
     />
   )

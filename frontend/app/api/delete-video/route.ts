@@ -1,10 +1,11 @@
 import { deleteRender } from '@remotion/lambda/client'
 import axios from 'axios'
-import { NextRequest, NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 
 const bucketName = process.env.REMOTION_AWS_BUCKET_NAME
 
-export async function DELETE(req: NextRequest) {
+export const DELETE = async (req: NextRequest) => {
   if (!bucketName) {
     return NextResponse.json(
       { error: 'BucketName not defined' },

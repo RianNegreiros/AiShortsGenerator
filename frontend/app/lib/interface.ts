@@ -1,9 +1,9 @@
-export interface VideoContentItem {
+export type VideoContentItem = {
   imagePrompt: string
   contextText: string
 }
 
-export interface TranscriptSegment {
+export type TranscriptSegment = {
   confidence: number
   start: number
   end: number
@@ -12,7 +12,7 @@ export interface TranscriptSegment {
   speaker: string | null
 }
 
-export interface VideoData {
+export type VideoData = {
   id?: number
   videoContent: VideoContentItem[]
   audioFileUrl: string

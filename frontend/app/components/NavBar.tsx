@@ -1,6 +1,8 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
 import { BrainCircuit } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
+
 import ThemeToggle from './ThemeToggle'
 
 export default function Navbar() {

@@ -22,7 +22,7 @@ This project is a frontend for generating short videos using AI. It allows users
 
 ## Requirements
 
-- Node.js (v18.x or above)
+- Node.js (v22)
 - API for video generation (Ensure your environment variables are correctly configured on backend/appsettings.Development.json)
 
 ## Installation

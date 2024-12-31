@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardTitle } from '@/components/ui/card'
 import Image from 'next/image'
+
+import { Card, CardTitle } from '@/components/ui/card'
 
 const options = [
   {
@@ -48,6 +49,7 @@ const options = [
 ]
 
 type SelectStyleProps = {
+  // eslint-disable-next-line no-unused-vars
   onUserSelect: (fieldName: string, fieldValue: string) => void
 }
 
@@ -60,13 +62,13 @@ export default function SelectStyle({ onUserSelect }: SelectStyleProps) {
         id='style'
         className='grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6'
       >
-        {options.map((item, index) => (
+        {options.map((item) => (
           <Card
             onClick={() => {
               setSelectOption(item.name)
               onUserSelect('imageStyle', item.name)
             }}
-            key={index}
+            key={item.name}
             className={`cursor-pointer transition-all ${
               selectOption === item.name
                 ? 'border-4 border-black dark:border-white'
@@ -86,7 +88,7 @@ export default function SelectStyle({ onUserSelect }: SelectStyleProps) {
                   priority
                 />
               </div>
-              <div className='absolute bottom-0 left-0 right-0 rounded-b-lg bg-black bg-opacity-75 p-2'>
+              <div className='absolute inset-x-0 bottom-0 rounded-b-lg bg-black/75 p-2'>
                 <CardTitle className='text-2xl font-bold text-white'>
                   {item.name}
                 </CardTitle>

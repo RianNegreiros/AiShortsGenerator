@@ -1,7 +1,8 @@
-import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import Image from 'next/image'
 
-interface ImageCardProps {
+import { Card, CardContent, CardFooter } from '@/components/ui/card'
+
+type ImageCardProps = {
   src: string
   alt: string
   title: string

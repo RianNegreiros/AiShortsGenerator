@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/select'
 
 type SelectDurationProps = {
+  // eslint-disable-next-line no-unused-vars
   onUserSelect: (fieldName: string, fieldValue: string) => void
 }
 

@@ -3,14 +3,16 @@ import {
   getRenderProgress,
   renderMediaOnLambda,
 } from '@remotion/lambda/client'
-import { VideoData } from '@/app/lib/interface'
-import { NextRequest, NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 import axios from 'axios'
+
+import type { VideoData } from '@/app/lib/interface'
 
 const serveUrl = process.env.REMOTION_AWS_SERVE_URL
 
-export async function POST(req: NextRequest) {
-  if (serveUrl == undefined) {
+export const POST = async (req: NextRequest) => {
+  if (serveUrl === undefined) {
     return NextResponse.json(
       { error: 'Serve URL not defined' },
       { status: 500 },
