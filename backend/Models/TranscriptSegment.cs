@@ -2,7 +2,6 @@ namespace AiShortsGenerator.Models;
 
 public class TranscriptSegment
 {
-    public int Id { get; set; }
     public double Confidence { get; set; }
     public double Start { get; set; }
     public double End { get; set; }
