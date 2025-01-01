@@ -1,5 +1,5 @@
 import { TranscriptSegment, VideoData } from '@/app/lib/interface'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   AbsoluteFill,
   Audio,
@@ -41,7 +41,7 @@ export const MyComposition = ({
   }
 
   return (
-    <AbsoluteFill className='bg-black'>
+    <AbsoluteFill>
       {images.map((item, index) => {
         const key = item || `image-${index}`
         const startTime = (index * durationFrame) / images.length
@@ -52,10 +52,15 @@ export const MyComposition = ({
           [1, 1.2, 1],
           { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' },
         )
+
         return (
           <Sequence key={key} from={startTime} durationInFrames={durationFrame}>
             <AbsoluteFill
-              style={{ justifyContent: 'center', alignItems: 'center' }}
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
             >
               <Img
                 src={item}
@@ -63,15 +68,21 @@ export const MyComposition = ({
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  transform: `scale(${scale})`,
+                  transform: `scale(${scale})`
                 }}
               />
               <AbsoluteFill
-                className='text-center text-lg text-white'
                 style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  fontSize: '1.25rem',
+                  color: 'white',
+                  position: 'absolute',
                   top: undefined,
                   bottom: 0,
-                  height: 100,
+                  height: '200px'
                 }}
               >
                 <p>{getCurrentCaption()}</p>
