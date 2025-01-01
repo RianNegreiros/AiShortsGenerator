@@ -63,7 +63,7 @@ app.MapPost("/generate-content", async (GeminiApiService googleApiService, [From
             }
 
             var userInput = userInputJson.GetString()!;
-            var result = await googleApiService.CallGoogleApi(userInput, apiKey);
+            var result = await googleApiService.CallGoogleApi(userInput);
 
             return Results.Ok(result);
         }
@@ -109,13 +109,7 @@ app.MapPost("/generate-captions", async (AssemblyAiService assemblyAiService, [F
         var fileUrl = inputJson.GetString()!;
         try
         {
-            var apiKey = builder.Configuration["AssemblyAi:ApiKey"];
-            if (string.IsNullOrEmpty(apiKey))
-            {
-                return Results.BadRequest(new { success = false, message = "API key is missing or not configured." });
-            }
-
-            var transcript = await assemblyAiService.Transcribe(fileUrl, apiKey);
+            var transcript = await assemblyAiService.Transcribe(fileUrl);
 
             return Results.Ok(transcript);
         }

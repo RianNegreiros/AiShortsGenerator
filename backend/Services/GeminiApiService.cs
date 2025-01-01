@@ -7,14 +7,16 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Models;
 
-public class GeminiApiService(HttpClient httpClient)
+public class GeminiApiService(HttpClient httpClient, IConfiguration configuration)
 {
-    public async Task<List<VideoContentItem>> CallGoogleApi(string input, string apiKey)
+    public async Task<List<VideoContentItem>> CallGoogleApi(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
         {
             throw new ArgumentException("User input cannot be null or empty", nameof(input));
         }
+
+        var apiKey = configuration["GoogleApi:GeminiKey"];
 
         if (string.IsNullOrEmpty(apiKey))
         {

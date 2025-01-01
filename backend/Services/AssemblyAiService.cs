@@ -3,10 +3,17 @@ using AssemblyAI.Transcripts;
 
 namespace AiShortsGenerator.Services;
 
-public class AssemblyAiService
+public class AssemblyAiService(IConfiguration configuration)
 {
-    public async Task<IEnumerable<TranscriptWord>> Transcribe(string fileUrl, string apiKey)
+    public async Task<IEnumerable<TranscriptWord>> Transcribe(string fileUrl)
     {
+        var apiKey = configuration["AssemblyAi:ApiKey"];
+
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            throw new InvalidOperationException("API key is not configured");
+        }
+
         var client = new AssemblyAIClient(apiKey);
 
         var transcriptParams = new TranscriptParams

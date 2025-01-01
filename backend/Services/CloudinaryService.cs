@@ -5,14 +5,14 @@ namespace AiShortsGenerator.Services;
 
 public class CloudinaryService(IConfiguration configuration)
 {
-    private readonly CloudinaryDotNet.Cloudinary _cloudinary = new(configuration["CloudinaryUrl"]);
+    private readonly Cloudinary _cloudinary = new(configuration["CloudinaryUrl"]);
 
     public async Task<string> UploadAudio(byte[] audioContent)
     {
-        var uploadParams = new AutoUploadParams()
+        var uploadParams = new AutoUploadParams
         {
             File = new FileDescription(Guid.NewGuid().ToString(), new MemoryStream(audioContent)),
-            Folder = "audio-files",
+            Folder = "audio-files"
         };
 
         var uploadResult = await _cloudinary.UploadAsync(uploadParams);
@@ -27,10 +27,10 @@ public class CloudinaryService(IConfiguration configuration)
 
     public async Task<string> UploadImage(byte[] imageContent)
     {
-        var uploadParams = new ImageUploadParams()
+        var uploadParams = new ImageUploadParams
         {
             File = new FileDescription(Guid.NewGuid().ToString(), new MemoryStream(imageContent)),
-            Folder = "image-files",
+            Folder = "image-files"
         };
 
         var uploadResult = await _cloudinary.UploadAsync(uploadParams);

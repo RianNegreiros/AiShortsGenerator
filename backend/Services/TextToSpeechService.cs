@@ -24,12 +24,12 @@ public class TextToSpeechService(IConfiguration configuration)
         var voiceSelection = new VoiceSelectionParams
         {
             LanguageCode = "en-US",
-            SsmlGender = SsmlVoiceGender.Neutral,
+            SsmlGender = SsmlVoiceGender.Neutral
         };
 
         var audioConfig = new AudioConfig
         {
-            AudioEncoding = AudioEncoding.Mp3,
+            AudioEncoding = AudioEncoding.Mp3
         };
 
         var response = await client.SynthesizeSpeechAsync(input, voiceSelection, audioConfig);

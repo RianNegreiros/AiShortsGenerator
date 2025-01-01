@@ -51,12 +51,12 @@ public class CloudflareApiService
             throw new HttpRequestException($"Failed to generate image: {errors}");
         }
 
-        if (responseContent.Result?.Image == null)
+        if (responseContent.Result.Image == null)
         {
             throw new HttpRequestException("Failed to generate image: No image returned by Cloudflare API.");
         }
 
-        if (!(responseContent.Messages?.Count > 0))
+        if (!(responseContent.Messages.Count > 0))
         {
             return Convert.FromBase64String(responseContent.Result.Image);
         }
