@@ -16,11 +16,16 @@ This is a monorepo project that includes both the [frontend](./frontend/README.m
 
 ## Features
 
+### Frontend
+
 - **Video Creation**: Users can create short videos by selecting topics, styles, and durations.
 - **Video Preview**: After generating a video, users can preview it with generated captions and images.
+- **Video Deletion**: Users can delete the video from the database and the cloud if video was once rendered.
 - **Export Video**: Users can export the generated video once the rendering is completed.
 - **Theming**: Supports light and dark themes using `next-themes`.
-- **Responsive Design**: Built with Tailwind CSS for responsive and modern UI.
+
+### Backend
+
 - **Content Generation**: Create video content based on user input using Google's Gemini API.
 - **Audio Synthesis**: Convert text input to speech using Google Cloud Text-to-Speech API.
 - **Caption Generation**: Generate captions for audio or video files using AssemblyAI.
@@ -35,6 +40,8 @@ This is a monorepo project that includes both the [frontend](./frontend/README.m
 - [Cloudinary](https://cloudinary.com/) account and API key
 - [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/) account and API key. I used [flux-1-schnell Model](https://developers.cloudflare.com/workers-ai/models/flux-1-schnell/)
 - [AssemblyAI](https://www.assemblyai.com/) API key
+- [Google Cloud Text-to-Speech](https://codelabs.developers.google.com/codelabs/cloud-text-speech-csharp) API Key
+- [Gemini](https://ai.google.dev/gemini-api/docs#rest) API key
 
 ## Installation
 
@@ -63,14 +70,15 @@ This is a monorepo project that includes both the [frontend](./frontend/README.m
 
 Configure the following environment variables for both frontend and backend:
 
-### Frontend (`.env.local`)
+### Frontend (`.env`)
 
 ```plaintext
-  NEXT_PUBLIC_API_URL=http://localhost:5211
+  NEXT_PUBLIC_API_URL=<Your API URL>
   REMOTION_AWS_SERVE_URL=<Your AWS Serve URL for Remotion>
+  REMOTION_AWS_BUCKET_NAME=<Your AWS Bucket URL for Remotion>
 ```
 
-Check the [Remotion setup lambda guide](https://www.remotion.dev/docs/lambda/setup) to get the `REMOTION_AWS_SERVE_URL` variable.
+Check the [Remotion setup lambda guide](https://www.remotion.dev/docs/lambda/setup) to get the `REMOTION_AWS_SERVE_URL` and `REMOTION_AWS_BUCKET_NAME` variables.
 
 ### Backend (appsettings.json)
 ```json

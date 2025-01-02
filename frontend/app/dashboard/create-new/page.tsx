@@ -68,7 +68,7 @@ export default function CreateNew() {
     setLoadingMessage('Generating video content...')
     setProgress(20)
 
-    const prompt = `Generate a script for a video lasting ${formData.duration} seconds on the topic '${formData.topic}'. For each scene, provide the following in JSON format: [{'ContextText': '<Description of the scene (concise and fitting the duration)>','ImagePrompt': '<AI image generation prompt in ${formData.imageStyle} style>'}] Ensure all fields are well-structured, and do not include plain text outside the JSON.`;
+    const prompt = `Generate a script for a video lasting ${formData.duration} seconds on the topic '${formData.topic}'. For each scene, provide the following in JSON format: [{'ContextText': '<Description of the scene (concise and fitting the duration)>','ImagePrompt': '<AI image generation prompt in ${formData.imageStyle} style>'}] Ensure all fields are well-structured, and do not include plain text outside the JSON.`
 
     const resp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/generate-content`,

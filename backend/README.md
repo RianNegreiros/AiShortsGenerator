@@ -54,8 +54,8 @@ Ensure you have the following set up:
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet).
 - [PostgreSQL](https://www.postgresql.org/download/) for the database. I used [Neon Serverless Postgres](https://neon.tech/)
-- [Gemini](https://ai.google.dev/gemini-api/docs/quickstart?lang=rest) API key.
-- [Text-to-Speech AI](https://cloud.google.com/text-to-speech) API key.
+- [Google Cloud Text-to-Speech](https://codelabs.developers.google.com/codelabs/cloud-text-speech-csharp) API Key
+- [Gemini](https://ai.google.dev/gemini-api/docs#rest) API key
 - [Cloudinary](https://cloudinary.com/) account and API key.
 - [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/) account and API key. I used [flux-1-schnell Model](https://developers.cloudflare.com/workers-ai/models/flux-1-schnell/)
 - [AssemblyAI](https://www.assemblyai.com/) API key.

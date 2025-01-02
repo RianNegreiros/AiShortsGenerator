@@ -17,6 +17,7 @@ This project is a frontend for generating short videos using AI. It allows users
 
 - **Video Creation**: Users can input a topic, select an image style, and define the duration for their video.
 - **Video Preview**: After generating a video, users can preview the video with generated captions and images.
+- **Video Deletion**: After generating a video, users can delete the video from the database and the cloud.
 - **Export Video**: Users can export the generated video once the rendering is completed.
 - **Dark/Light Theme**: The application supports dark and light modes.
 
@@ -47,9 +48,10 @@ Before starting the app, make sure you configure the following environment varia
 ```plaintext
   NEXT_PUBLIC_API_URL=<Your API URL>
   REMOTION_AWS_SERVE_URL=<Your AWS Serve URL for Remotion>
+  REMOTION_AWS_BUCKET_NAME=<Your AWS Bucket URL for Remotion>
 ```
 
-To get the AWS Serve URL follow this [guide](https://www.remotion.dev/docs/lambda/setup) from the remotion docs
+To get the AWS Serve URL and Bucket follow this [guide](https://www.remotion.dev/docs/lambda/setup) from the remotion docs
 
 ## Development
 

@@ -22,7 +22,7 @@ POST {{AiShortsGenerator_LocalAddress}}/generate-captions
 Content-Type: application/json
 
 {
-  "fileUrl": "https://res.cloudinary.com/riannegreirosdev/video/upload/v1735291286/audio-files/neg9oxoke38wvrn0vxf1.mp3"
+  "fileUrl": "https://res.cloudinary.com/your-cloudinary-account/video/upload/audio-files/file.mp3"
 }
 
 ### Test Generate Image
@@ -38,7 +38,7 @@ POST {{AiShortsGenerator_LocalAddress}}/videos/58
 Content-Type: application/json
 
 {
-  "outputFile": "https://s3.us-east-1.amazonaws.com/remotionlambda-useast1-gafocltvoz/renders/bmf1iwmgdk/out.mp4"
+  "outputFile": "https://s3.us-east-1.amazonaws.com/your-aws-bucket/out.mp4"
 }
 
 ### Test Save Video
@@ -56,7 +56,7 @@ Content-Type: application/json
       "contextText": "The Colosseum in Rome could hold between 50,000 and 80,000 spectators."
     }
   ],
-  "audioFileUrl": "https://res.cloudinary.com/riannegreirosdev/video/upload/v1735304862/audio-files/wdl4rrgidus0fakklw5q.mp3",
+  "audioFileUrl": "https://res.cloudinary.com/your-cloudinary-account/video/upload/audio-files/file.mp3",
   "captions": [
     {
       "confidence": 0.99942,
@@ -92,8 +92,8 @@ Content-Type: application/json
     }
   ],
   "images": [
-    "https://res.cloudinary.com/riannegreirosdev/image/upload/v1735304873/image-files/u3phuymnnikehxutjebe.jpg",
-    "https://res.cloudinary.com/riannegreirosdev/image/upload/v1735304876/image-files/zjld8lgtreiwzzvjgs9w.jpg"
+    "https://res.cloudinary.com/your-cloudinary-account/video/upload/images-files/file.jpg",
+    "https://res.cloudinary.com/your-cloudinary-account/video/upload/images-files/file.jpg"
   ]
 }
 

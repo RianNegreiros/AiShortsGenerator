@@ -68,7 +68,7 @@ export const MyComposition = ({
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  transform: `scale(${scale})`
+                  transform: `scale(${scale})`,
                 }}
               />
               <AbsoluteFill
@@ -82,7 +82,7 @@ export const MyComposition = ({
                   position: 'absolute',
                   top: undefined,
                   bottom: 0,
-                  height: '200px'
+                  height: '200px',
                 }}
               >
                 <p>{getCurrentCaption()}</p>
